@@ -13,12 +13,12 @@ const Star: React.FC<StarProps> = ({ rating, onChangeRating }) => {
 	// const location = useLocation();
 	// const mealType = location.state?.mealType || "default";
 
-	const [stars, setStars] = useState<(0 | 1 | 2)[]>([0, 0, 0, 0, 0]); // 0: 빈 별, 1: 반 별, 2: 꽉 찬 별
+	const [stars, setStars] = useState<number[]>([0, 0, 0, 0, 0]); // 0: 빈 별, 1: 반 별, 2: 꽉 찬 별
 
 
 	//지피티 코드 입니다............
 	const handleClick = (index: number) => {
-		const updatedStars = stars.map((value, i) => {
+		const updatedStars: number[] = stars.map((_value, i) => {
 			if (i < index) return 2;
 			if (i === index) return stars[i] === 1 ? 2 : 1;
 			return 0;
