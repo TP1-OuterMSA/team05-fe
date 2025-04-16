@@ -2,7 +2,8 @@ export const getGPTQuestion = async (menuName: string): Promise<string> => {
 	await new Promise((resolve) => setTimeout(resolve, 2000)); // 2초 대기
 
 	const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-	const response = await fetch("https://api.openai.com/v1/chat/completions", {
+	const gptUrl = import.meta.env.VITE_OPENAI_API_URL;
+	const response = await fetch(gptUrl, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
