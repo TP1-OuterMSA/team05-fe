@@ -1,0 +1,51 @@
+@font-face {
+	font-family: "Noto Sans KR";
+	font-style: normal;
+	font-weight: 400;
+	src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) format("woff2"),
+		url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format("woff"),
+		url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format("opentype");
+}
+
+@font-face {
+	font-family: "Noto Sans KR";
+	font-style: normal;
+	font-weight: 500;
+	src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format("woff2"),
+		url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format("woff"),
+		url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format("opentype");
+}
+
+@font-face {
+	font-family: "Noto Sans KR";
+	font-style: normal;
+	font-weight: 700;
+	src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format("woff2"),
+		url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format("woff"),
+		url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format("opentype");
+}
+
+:root {
+	--White: #ffffff;
+	--Black: #000000;
+	--Primary: #002a68;
+	--Secondary: #0087d1;
+	--Headline: #271700;
+	--M5: #f2f4f7;
+	--M30: #b2bfd2;
+	--M50: #8094b3;
+	--M70: #4d6a95;
+	--SectionTitle: 700 28px / 140% Noto Sans KR;
+	--MenuTitle: 700 20px / 120% Noto Sans KR;
+	--HeaderTitle: 500 16px / 200% Noto Sans KR;
+	--PageTitle: 700 14px / 120% Noto Sans KR;
+	--ListTitle: 500 14px / 120% Noto Sans KR;
+	--NavigationTitle: 700 12px / 100% Noto Sans KR;
+	--ContentsHeader: 700 16px / 100% Noto Sans KR;
+	--Heading: 400 16px / 100% Noto Sans KR;
+	--BodyText: 400 16px / 150% Noto Sans KR;
+	--SubText: 400 14px / 140% Noto Sans KR;
+	--Button: 700 16px / 100% Noto Sans KR;
+	--Footer: 400 12px / 160% Noto Sans KR;
+	--Caption: 400 12px / 100% Noto Sans KR;
+}
