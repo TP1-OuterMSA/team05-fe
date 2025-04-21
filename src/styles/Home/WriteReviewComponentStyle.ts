@@ -12,7 +12,7 @@ export const BigText = styled.p`
     padding: 0;
     margin: 10px 0 20px 0;
     font-weight: bold;
-    font-color: black;
+    color: black;
     font-size: 25px;
 `;
 
@@ -21,7 +21,7 @@ export const MealTypeDiv = styled.p`
     padding: 0 0 20px 0;
     border-bottom: 2px solid  #6D717D;
     font-weight: bold;
-    font-color: black;
+    color: black;
     font-size: 20px;
 `;
 
