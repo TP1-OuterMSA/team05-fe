@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import ReviewPage from './pages/WriteReviewPage';
+import ReviewLayout from './components/layout/ReviewLayout';
 import ViewReviewPage from './pages/ViewReviewPage';
+import WantedMenu from './components/WantedMenu';
+import WriteReview from './components/WriteReview';
 
 
 
@@ -11,8 +13,10 @@ const Router = () => {
 		<BrowserRouter>
 			<Layout>
 				<Routes>
-					<Route path="/team5/review" element={<ReviewPage />}
-					/>
+					<Route path="/team5" element={<ReviewLayout />}>
+						<Route path="review" element={<WriteReview />} />
+						<Route path="wantMenu" element={<WantedMenu />} />
+					</Route>
 					<Route path="/team5/evaluation" element={<ViewReviewPage />} />
 				</Routes>
 			</Layout>

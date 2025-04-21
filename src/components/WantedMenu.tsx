@@ -1,20 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import * as S from "../styles/Home/WantedMenuComponentStyle";
 import SubmitModal from "../components/modal/SubmitModal";
+import { getWantMenu, postWantMenu } from "../api/wantMenu";
 
-
-const menuList = ["김치우동밥", "된장찌개", "새우튀김", "치즈 핫도그", "감자 볶음", "카레 라이스"];
 
 const WantedMenu = () => {
 	const navigate = useNavigate();
 	const [selectedMenus, setSelectedMenus] = useState<string[]>([]);
-	const [customMenu, setCustomMenu] = useState<string>("");
+	const [customMenu, setCustomMenu] = useState<string>();
 	const [noneSelected, setNoneSelected] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
-
-
+	const [menuList, setMenuList] = useState<string[]>([]);
 
 
 	const handleSelect = (menu: string) => {
@@ -25,21 +23,40 @@ const WantedMenu = () => {
 		}
 	};
 
-	const handleSubmit = () => {
-		if (!noneSelected && selectedMenus.length === 0 && customMenu.trim() === "") {
+	const handleSubmit = () => {//noneselectedmenu가 선택되어있고 trim이 0이거나 배열의 길이가 0이면서 trim이 0이면
+		if ((noneSelected && (customMenu?.trim() === "" || customMenu===undefined) )||(selectedMenus.length === 0 && (customMenu?.trim() === "" || customMenu===undefined))) {
 			alert("메뉴를 선택하거나 추가 의견을 입력해주세요.");
 			return;
 		}
-
-		console.log("선택한 메뉴:", noneSelected ? "선택하지 않음" : selectedMenus);
-		console.log("추가 의견:", customMenu);
+		const fetchWantMenu = async() => {
+			try{
+				await postWantMenu(selectedMenus?selectedMenus:undefined, customMenu?customMenu:undefined);
+				console.log('db 전송 성공');
+			}catch(error){
+				throw error;
+			}
+		}
+		fetchWantMenu();
+		// console.log("선택한 메뉴:", noneSelected ? "선택하지 않음" : selectedMenus);
+		// console.log("추가 의견:", customMenu);
 		setShowModal(true);
-		// 제출 API 로직
 	};
 	const handleConfirm = () => {
-		setShowModal(false);          // 모달 닫기
-		navigate("/team5/evaluation"); // 페이지 이동
+		setShowModal(false);
+		navigate("/team5/evaluation");
 	};
+
+	useEffect(()=>{
+		const fetchGetWantMenu = async() => {
+			try{
+				const data = await getWantMenu();
+				setMenuList(data.result.menuList.map((menu: { name: string; })=>menu.name));
+			}catch(error){
+				throw error;
+			}
+		}
+		fetchGetWantMenu();
+	},[])
 
 
 	return (
