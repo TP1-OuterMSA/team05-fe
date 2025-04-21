@@ -23,6 +23,7 @@ interface TodayMeal {
 
 const WriteReview = () => {
 	const [mealType, setMealType] = useState<MealType>("조식");
+	const [noneMeal, setNoneMeal] = useState<string>("");
 	const [todayMeal, setTodayMeal] = useState<TodayMeal>();
 	const [wholeReview, setWholeReview] = useState<string>("");
 	const [freeReview, setFreeReview] = useState<string>("");
@@ -46,12 +47,17 @@ const WriteReview = () => {
 	}
 
 	const handleSubmitClick = () => {
-		const allRating = reviewData.every((item) => item.rating !== 0);
-		if (allRating) {
+		const allFilled = reviewData.every((item) => 
+			item.rating !== 0 && item.comment.trim() !== ""
+		);
+		const isWholeReviewFilled = wholeReview.trim() !== "";
+		const isFreeReviewFilled = freeReview.trim() !== "";
+
+		if (allFilled && isWholeReviewFilled && isFreeReviewFilled) {
 			handlePostReview();
 			alert('리뷰가 성공적으로 저장되었습니다.');
 			//서버로 정보 넘기는 코드
-		} else alert('모든 메뉴에 별점을 남겨주세요!');
+		} else alert('모든 메뉴에 리뷰를 남겨주세요!');
 	}
 
 	const handleGetMeal = (selectedMeal: string) => {
@@ -61,6 +67,7 @@ const WriteReview = () => {
 				setTodayMeal(response.result);
 				console.log(response.result);
 			} catch (error) {
+				setNoneMeal(selectedMeal);
 				throw error;
 			}
 		};
@@ -171,40 +178,45 @@ const WriteReview = () => {
 					</S.MealTypeLabel>
 				</S.MealTypeDiv>
 
-				<S.BigText>오늘의 메뉴 리뷰</S.BigText>
-				<div>
-					<S.Text>전체 메뉴 평가</S.Text>
-					<S.WholeReviewInput placeholder="전체적인 메뉴에 대한 의견을 작성해주세요." value={wholeReview} onChange={(e) => setWholeReview(e.target.value)} />
-				</div>
-
-				<S.BigText style={{ fontSize: "23px" }}>개별 메뉴 평가</S.BigText>
-				{reviewData.map((menu, index) => (
-					<EachWriteReview
-						key={index}
-						menu={menu.menu}
-						rating={menu.rating}
-						question={menu.question}
-						comment={menu.comment}
-						onChangeRating={(newRating) => {
-							const updated = [...reviewData];
-							updated[index].rating = newRating;
-							setReviewData(updated);
-						}}
-						onChangeComment={(newComment) => {
-							const updated = [...reviewData];
-							updated[index].comment = newComment;
-							setReviewData(updated);
-						}}
-					/>
-				))}
-
-				<div>
-					<S.Text>자유 의견</S.Text>
-					<S.WholeReviewInput placeholder="추가 의견을 자유롭게 작성해주세요." value={freeReview} onChange={(e) => { setFreeReview(e.target.value) }} />
-				</div>
+				{noneMeal==""?
+					<>
+						<S.BigText>오늘의 메뉴 리뷰</S.BigText>
+						<div>
+							<S.Text>전체 메뉴 평가</S.Text>
+							<S.WholeReviewInput placeholder="전체적인 메뉴에 대한 의견을 작성해주세요." value={wholeReview} onChange={(e) => setWholeReview(e.target.value)} />
+						</div>
+		
+						<S.BigText style={{ fontSize: "23px" }}>개별 메뉴 평가</S.BigText>
+						{reviewData.map((menu, index) => (
+							<EachWriteReview
+								key={index}
+								menu={menu.menu}
+								rating={menu.rating}
+								question={menu.question}
+								comment={menu.comment}
+								onChangeRating={(newRating) => {
+									const updated = [...reviewData];
+									updated[index].rating = newRating;
+									setReviewData(updated);
+								}}
+								onChangeComment={(newComment) => {
+									const updated = [...reviewData];
+									updated[index].comment = newComment;
+									setReviewData(updated);
+								}}
+							/>
+						))}
+		
+						<div>
+							<S.Text>자유 의견</S.Text>
+							<S.WholeReviewInput placeholder="추가 의견을 자유롭게 작성해주세요." value={freeReview} onChange={(e) => { setFreeReview(e.target.value) }} />
+						</div>
+					</>:
+					<><S.NoneMeal><p>오늘의 {noneMeal=="BREAKFAST"?"조식":noneMeal=="LUNCH"?"중식":"석식"}이 존재하지 않습니다.</p></S.NoneMeal></>
+				}
 
 			</S.ReviewDiv>
-			<S.SubmitBtn onClick={() => handleSubmitClick()}>제출하기</S.SubmitBtn>
+			{noneMeal==""?<S.SubmitBtn onClick={() => handleSubmitClick()}>제출하기</S.SubmitBtn>:<></>}
 		</>
 	);
 
