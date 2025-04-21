@@ -1,12 +1,21 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import * as S from "../styles/Home/WantedMenuComponentStyle";
+import SubmitModal from "../components/modal/SubmitModal";
+
 
 const menuList = ["김치우동밥", "된장찌개", "새우튀김", "치즈 핫도그", "감자 볶음", "카레 라이스"];
 
 const WantedMenu = () => {
+	const navigate = useNavigate();
 	const [selectedMenus, setSelectedMenus] = useState<string[]>([]);
 	const [customMenu, setCustomMenu] = useState<string>("");
-	const [noneSelected, setNoneSelected] = useState<boolean>(false); // ✅ "선택하지 않음" 상태
+	const [noneSelected, setNoneSelected] = useState<boolean>(false);
+	const [showModal, setShowModal] = useState(false);
+
+
+
 
 	const handleSelect = (menu: string) => {
 		if (selectedMenus.includes(menu)) {
@@ -24,8 +33,14 @@ const WantedMenu = () => {
 
 		console.log("선택한 메뉴:", noneSelected ? "선택하지 않음" : selectedMenus);
 		console.log("추가 의견:", customMenu);
+		setShowModal(true);
 		// 제출 API 로직
 	};
+	const handleConfirm = () => {
+		setShowModal(false);          // 모달 닫기
+		navigate("/team5/evaluation"); // 페이지 이동
+	};
+
 
 	return (
 		<>
@@ -70,6 +85,14 @@ const WantedMenu = () => {
 
 			{/* ✅ 제출 버튼은 ReviewDiv 바깥쪽에 위치 */}
 			<S.SubmitBtn onClick={handleSubmit}>제출하기</S.SubmitBtn>
+
+			{showModal && (
+				<SubmitModal
+					onClose={() => setShowModal(false)}
+					onConfirm={handleConfirm} // ✅ 여기!
+				/>
+			)}
+
 		</>
 	);
 
