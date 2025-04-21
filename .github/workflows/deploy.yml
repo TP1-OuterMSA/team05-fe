@@ -12,7 +12,7 @@ on:
 env:
   APP_ENV: development
   REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-  VITE_API_URL: ${{ secrets.SERVER_HOST }}
+  VITE_BACKEND_URL: ${{ secrets.SERVER_HOST }}
   APP_NAME: team05-fe
   ECR_REPOSITORY: 809691348554.dkr.ecr.ap-northeast-2.amazonaws.com/team05-fe-repository
 permissions:
