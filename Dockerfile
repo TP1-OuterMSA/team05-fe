@@ -3,6 +3,7 @@ FROM node:18-alpine as build
 
 WORKDIR /app
 
+# 환경변수 등록
 ARG VITE_BACKEND_URL
 ARG VITE_OPENAI_API_URL
 ARG VITE_OPENAI_API_KEY
