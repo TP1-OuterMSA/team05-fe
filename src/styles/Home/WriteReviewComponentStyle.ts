@@ -70,3 +70,12 @@ export const SubmitBtn = styled.button`
     margin: 30px 0 30px auto;
     border: none;
 `;
+
+export const NoneMeal = styled.div`
+    margin: 50px auto;
+    p{
+        color: black;
+        font-size: 20px;
+        font-weight: bold;
+    }
+`;

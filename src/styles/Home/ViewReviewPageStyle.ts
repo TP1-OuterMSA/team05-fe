@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const ViewReviewContainer = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: #F9FAFC;
+    background-color: #EFF2F8;
     height: 100vh;
     padding: 30px;
 `;
