@@ -13,6 +13,8 @@ env:
   APP_ENV: development
   REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
   VITE_BACKEND_URL: ${{ secrets.SERVER_HOST }}
+  VITE_OPENAI_API_URL: ${{ secrets.VITE_OPENAI_API_URL }}
+  VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
   APP_NAME: team05-fe
   ECR_REPOSITORY: 809691348554.dkr.ecr.ap-northeast-2.amazonaws.com/team05-fe-repository
 permissions:
@@ -60,7 +62,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           DOCKER_TAG: ${{ env.APP_ENV }}
         run: |
-          docker build -t ${{ env.ECR_REPOSITORY }}:sha-${{ env.SHORT_SHA }} .
+          docker build --build-arg VITE_BACKEND_URL=${{ secrets.SERVER_HOST }} --build-arg VITE_OPENAI_API_URL=${{ secrets.VITE_OPENAI_API_URL }} --build-arg VITE_OPENAI_API_KEY=${{ secrets.VITE_OPENAI_API_KEY }} -t ${{ env.ECR_REPOSITORY }}:sha-${{ env.SHORT_SHA }} .
           docker push ${{ env.ECR_REPOSITORY }}:sha-${{ env.SHORT_SHA }}
 
       # Infra 저장소 업데이트 단계
