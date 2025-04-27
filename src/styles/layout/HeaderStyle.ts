@@ -12,8 +12,6 @@ export const Inner = styled.div`
   align-items: center;
   height: 80px;
   padding: 0 40px;
-  cursor: pointer;
-
 `;
 
 export const MenuImg = styled.img`
@@ -24,10 +22,25 @@ export const MenuImg = styled.img`
 export const LogoImg = styled.img`
   margin-left: 10px;
   height: 40px; 
+  margin-right: auto;
 `
 
+export const QuizBtn = styled.button`
+  display: flex;
+  margin-right: 20px;
+  background-color: #3a8ef6;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  line-height: 25px;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+`;
+
+
 export const Text = styled.p`
-  margin-left: auto;
   color: #6D717D;
   font-weight: bold;
   font-size: 15px;

@@ -11,12 +11,21 @@ export const getGPTQuestion = async (menuName: string): Promise<string> => {
 			"OpenAI-Project": "proj_GqFQUyvIEXk1yOB6VnpSFAWH",
 		},
 		body: JSON.stringify({
-			model: "gpt-3.5-turbo",
+			model: "gpt-4-turbo",
 			messages: [
 				{
 					role: "user",
-					content: `학생식당에서 제공된 ${menuName} 메뉴에 대해 평가를 유도하는 질문 하나를 만들어줘. 
-					맛, 온도, 식감, 양, 개선점 등 중 하나를 자연스럽게 물어보는 형식이면 좋아.한문장 이내로 해줘.`
+					content: `${menuName} 메뉴의 특징을 고려해서, 맛/식감/온도/향 중 **가장 어울리는 하나만 선택**해.  
+					그에 맞는 **질문 하나만 생성**해줘.  
+					
+					질문 조건:  
+					- **40자 이내**  
+					- **자연스러운 한국어 문장**  
+					- **질문은 하나만**  
+					- **번호나 따옴표 없이 질문 문장만 출력**
+					
+					예시:  
+					돈까스 치즈의 풍미는 살아있었나요?`
 					,
 				},
 			],

@@ -5,6 +5,8 @@ import * as S from "../styles/Home/WriteReviewComponentStyle";
 import EachWriteReview from "./EachWriteReview";
 import { getTodayMeal, postReview } from "../api/review";
 import { getGPTQuestion } from "../utils/gpt";
+import SubmitModal from "../components/modal/SubmitModal";
+import { useNavigate } from "react-router-dom";
 
 type MealType = "조식" | "중식" | "석식";
 
@@ -22,6 +24,7 @@ interface TodayMeal {
 }
 
 const WriteReview = () => {
+	const navigate = useNavigate();
 	const [mealType, setMealType] = useState<MealType>("조식");
 	const [noneMeal, setNoneMeal] = useState<string>("");
 	const [todayMeal, setTodayMeal] = useState<TodayMeal>();
@@ -30,6 +33,7 @@ const WriteReview = () => {
 	//식단에 대한 별점과 comment 저장할 것임으로 받아온 식단들을 list 형태로 묶어서 저장
 	const [reviewData, setReviewData] = useState<ReviewData[]>([]);
 	const [questionMap, setQuestionMap] = useState<{ [menu: string]: string }>({});
+	const [showModal, setShowModal] = useState(false);
 
 	//mealtype이 바뀔 때마다 식단 list 초기화
 	const handleMealTypeChange = (type: MealType) => {
@@ -55,7 +59,7 @@ const WriteReview = () => {
 
 		if (allFilled && isWholeReviewFilled && isFreeReviewFilled) {
 			handlePostReview();
-			alert('리뷰가 성공적으로 저장되었습니다.');
+			setShowModal(true);
 			//서버로 정보 넘기는 코드
 		} else alert('모든 메뉴에 리뷰를 남겨주세요!');
 	}
@@ -73,6 +77,12 @@ const WriteReview = () => {
 		};
 		fetchTodayMeal();
 	};
+
+	useEffect(()=>{
+		if(mealType=="조식") handleGetMeal("BREAKFAST");
+		else if(mealType=="중식") handleGetMeal("LUNCH");
+		else if(mealType=="석식") handleGetMeal("DINNER");
+	}, [mealType])
 
 	const handlePostReview = async () => {
 		const menuRatings: { [menu: string]: number } = {};
@@ -100,7 +110,7 @@ const WriteReview = () => {
 			throw error;
 		}
 	}
-	//이 코드 사실 삭제해도 됨
+	
 	useEffect(() => {
 		if (todayMeal) {
 			setReviewData(
@@ -113,10 +123,6 @@ const WriteReview = () => {
 			);
 		}
 	}, [todayMeal]);
-
-	useEffect(() => {
-		handleGetMeal("LUNCH");
-	}, []);
 
 	useEffect(() => {
 		const fetchQuestionsInParallel = async () => {
@@ -157,6 +163,10 @@ const WriteReview = () => {
 		setReviewData(updatedReviewData);
 	}, [questionMap]);
 
+	const handleConfirm = () => {
+		setShowModal(false);
+		navigate("/team5/review");
+	};
 
 
 	return (
@@ -165,15 +175,15 @@ const WriteReview = () => {
 				<S.BigText>학식 종류 선택</S.BigText>
 				<S.MealTypeDiv>
 					<S.MealTypeLabel>
-						<input type="radio" name="mealType" value="조식" checked={mealType === "조식"} onChange={() => { handleMealTypeChange("조식"); handleGetMeal("LUNCH") }} style={{ marginRight: "15px" }} />
+						<input type="radio" name="mealType" value="조식" checked={mealType === "조식"} onChange={() => { handleMealTypeChange("조식");}} style={{ marginRight: "15px" }} />
 						<span>조식</span>
 					</S.MealTypeLabel>
 					<S.MealTypeLabel>
-						<input type="radio" name="mealType" value="중식" onChange={() => { handleMealTypeChange("중식"); handleGetMeal("LUNCH") }} style={{ marginRight: "15px" }} />
+						<input type="radio" name="mealType" value="중식" onChange={() => { handleMealTypeChange("중식"); }} style={{ marginRight: "15px" }} />
 						<span>중식</span>
 					</S.MealTypeLabel>
 					<S.MealTypeLabel>
-						<input type="radio" name="mealType" value="석식" onChange={() => { handleMealTypeChange("석식"); handleGetMeal("DINNER") }} style={{ marginRight: "15px" }} />
+						<input type="radio" name="mealType" value="석식" onChange={() => { handleMealTypeChange("석식");}} style={{ marginRight: "15px" }} />
 						<span>석식</span>
 					</S.MealTypeLabel>
 				</S.MealTypeDiv>
@@ -217,6 +227,12 @@ const WriteReview = () => {
 
 			</S.ReviewDiv>
 			{noneMeal==""?<S.SubmitBtn onClick={() => handleSubmitClick()}>제출하기</S.SubmitBtn>:<></>}
+			{showModal && (
+				<SubmitModal
+					onClose={() => setShowModal(false)}
+					onConfirm={handleConfirm}
+				/>
+			)}
 		</>
 	);
 

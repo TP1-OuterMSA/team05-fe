@@ -1,6 +1,7 @@
 import * as S from '../../styles/layout/HeaderStyle';
 import Logo from '../../assets/images/Logo.svg';
 import Menu from "../../assets/images/Menu.png";
+import Ghost from "../../assets/images/ghost_btn_icon.png";
 import LoginIcon from "../../assets/images/LoginIcon.png";
 import { useNavigate } from 'react-router-dom';
 
@@ -11,7 +12,8 @@ const Header = () => {
 		<S.HeaderContainer>
 			<S.Inner>
 				<S.MenuImg src={Menu}/>
-				<S.LogoImg src={Logo} alt="logo" onClick={()=>navigate('/')}/>
+				<S.LogoImg src={Logo} alt="logo" onClick={()=>navigate('/team5')}/>
+				<S.QuizBtn onClick={()=>navigate('/team5/quiz')}><img style={{width:"23px", marginRight:"5px"}} src={Ghost}/>Quiz</S.QuizBtn>
 				<S.Text>홍길동님 환영합니다</S.Text>
 				<S.LoginBtn>
 					<S.LoginImg src={LoginIcon}/>

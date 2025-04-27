@@ -73,6 +73,7 @@ export const SubmitBtn = styled.button`
 
 export const NoneMeal = styled.div`
     margin: 50px auto;
+    height: calc(100vh - 480px);
     p{
         color: black;
         font-size: 20px;
