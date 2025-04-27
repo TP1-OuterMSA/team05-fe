@@ -6,7 +6,6 @@ import WantedMenu from './components/WantedMenu';
 import WriteReview from './components/WriteReview';
 import QuizSuccess from './components/QuizSuccess';
 import QuizFail from './components/QuizFail';
-import FoodList from './components/FoodList';
 import QuizPage from './pages/QuizPage';
 import FoodListPage from './pages/FoodListPage';
 import FoodDetailPage from './pages/FoodDetailPage';
