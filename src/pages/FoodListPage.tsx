@@ -1,8 +1,8 @@
 import * as S from "../styles/FoodList/FoodListPageStyle";
 import { useNavigate } from "react-router-dom";
 import { foodListDummy } from "../api/foodListDummy";
-import GhostIcon from "../assets/images/quiz_icon.png";
-import Arrow from "../assets/images/Arrow.png";
+import GhostIcon from "../assets/images/team5/quiz_icon.png";
+import Arrow from "../assets/images/team5/Arrow.png";
 
 
 const FoodListPage = () => {

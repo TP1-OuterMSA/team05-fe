@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import * as S from "../styles/quiz/QuizSuccessComponentStyle";
-import Ghost_success from "../assets/images/quiz_success_icon.png";
+import Ghost_success from "../assets/images/team5/quiz_success_icon.png";
 
 
 const QuizSuccess = () => {

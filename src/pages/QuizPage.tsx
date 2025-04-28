@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as S from "../styles/quiz/QuizPageStyle"
 import HalfCircleProgress from "../components/HalfCircleProgress";
-import FileImg from "../assets/images/file.png";
-import Carrot from "../assets/images/carrot.png";
+import FileImg from "../assets/images/team5/file.png";
+import Carrot from "../assets/images/team5/carrot.png";
+import { foodListDummy } from "../api/foodListDummy";
 
 const quizData = [
   {
@@ -27,6 +28,7 @@ export default function QuizPage() {
   const [currentQuiz, setCurrentQuiz] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const navigate = useNavigate();
+  const listNum = foodListDummy.length;
 
   const handleOptionClick = (option: string) => {
     if (option === quizData[currentQuiz].answer) {
@@ -64,7 +66,7 @@ export default function QuizPage() {
         </S.Options>
       </S.QuizBox>
       <S.ButtonBox>
-        <S.SchoolRestaurantBtn onClick={() => navigate("/team5/food")}><S.BtnImg src={FileImg}/><div><p>학교 근처 맛집</p><p>n개</p></div></S.SchoolRestaurantBtn>
+        <S.SchoolRestaurantBtn onClick={() => navigate("/team5/foodList")}><S.BtnImg src={FileImg}/><div><p>학교 근처 맛집</p><p>{listNum}개</p></div></S.SchoolRestaurantBtn>
         <S.VoteBtn><S.BtnImg src={Carrot}/><p>제일 기대되는</p><p>학식 투표</p></S.VoteBtn>
       </S.ButtonBox>
     </S.Container>

@@ -1,5 +1,5 @@
 import * as S from "../styles/quiz/HalfCircleProgressComponentStyle";
-import ghostImg from "../assets/images/quiz_icon.png";
+import ghostImg from "../assets/images/team5/quiz_icon.png";
 
 interface HalfCircleProgressProps {
   progress: number; // 0 ~ 100

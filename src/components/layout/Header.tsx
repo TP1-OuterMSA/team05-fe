@@ -1,8 +1,8 @@
 import * as S from '../../styles/layout/HeaderStyle';
-import Logo from '../../assets/images/Logo.svg';
-import Menu from "../../assets/images/Menu.png";
-import Ghost from "../../assets/images/ghost_btn_icon.png";
-import LoginIcon from "../../assets/images/LoginIcon.png";
+import Logo from '../../assets/images/team5/Logo.svg';
+import Menu from "../../assets/images/team5/Menu.png";
+import Ghost from "../../assets/images/team5/ghost_btn_icon.png";
+import LoginIcon from "../../assets/images/team5/LoginIcon.png";
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {

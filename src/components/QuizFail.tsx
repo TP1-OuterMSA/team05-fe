@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import * as S from "../styles/quiz/QuizFailComponentStyle";
-import ghost_icon from "../assets/images/quiz_icon.png";
+import ghost_icon from "../assets/images/team5/quiz_icon.png";
 
 
 const QuizFail = () => {
