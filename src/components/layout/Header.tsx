@@ -11,12 +11,13 @@ const Header = () => {
 	return (
 		<S.HeaderContainer>
 			<S.Inner>
-				<S.MenuImg src={Menu}/>
-				<S.LogoImg src={Logo} alt="logo" onClick={()=>navigate('/team5')}/>
-				<S.QuizBtn onClick={()=>navigate('/team5/quiz')}><img style={{width:"23px", marginRight:"5px"}} src={Ghost}/>Quiz</S.QuizBtn>
+				<S.MenuImg src={Menu} />
+				<S.LogoImg src={Logo} alt="logo" onClick={() => navigate('/team5')} />
+				<S.QuizBtn onClick={() => navigate('/team5/quiz')}><img style={{ width: "23px", marginRight: "5px" }} src={Ghost} />Quiz</S.QuizBtn>
+				<S.QuizBtn onClick={() => navigate('/team5/ranking')}><img style={{ width: "23px", marginRight: "5px" }} src={Ghost} />Ranking</S.QuizBtn>
 				<S.Text>홍길동님 환영합니다</S.Text>
 				<S.LoginBtn>
-					<S.LoginImg src={LoginIcon}/>
+					<S.LoginImg src={LoginIcon} />
 					프로필
 				</S.LoginBtn>
 			</S.Inner>

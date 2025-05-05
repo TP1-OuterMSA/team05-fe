@@ -9,8 +9,8 @@ import QuizFail from './components/QuizFail';
 import QuizPage from './pages/QuizPage';
 import FoodListPage from './pages/FoodListPage';
 import FoodDetailPage from './pages/FoodDetailPage';
-
-
+import GuessRatePage from './pages/GuessRatePage';
+import RankingPage from './pages/RankingPage';
 
 
 const Router = () => {
@@ -28,6 +28,8 @@ const Router = () => {
 					<Route path="/team5/foodList" element={<FoodListPage />} />
 					<Route path="/team5/foodList/:id" element={<FoodDetailPage />} />
 					<Route path="/team5/evaluation" element={<ViewReviewPage />} />
+					<Route path="/team5/guessRate" element={<GuessRatePage />} />
+					<Route path="/team5/ranking" element={<RankingPage />} />
 				</Routes>
 			</Layout>
 		</BrowserRouter>
