@@ -6,7 +6,8 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 40px 20px;
-  // height: 100vh;
+  min-height: 100vh;
+  /* width: 100%; */
 `;
 
 export const Title = styled.h2`
@@ -90,8 +91,8 @@ export const FilterTabs = styled.div`
   }
 `;
 
-
 export const SearchContainer = styled.div<{ icon: string }>`
+  position: relative;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -106,11 +107,6 @@ export const SearchContainer = styled.div<{ icon: string }>`
     background-color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
-    background-image: url(${(props) => props.icon});
-    background-repeat: no-repeat;
-    background-size: 20px;
-    background-position: right 15px center;
-
     &::placeholder {
       color: #aaa;
     }
@@ -120,7 +116,22 @@ export const SearchContainer = styled.div<{ icon: string }>`
       border: 1px solid #3a8ef6;
     }
   }
+
+  button {
+    position: absolute;
+    right: 15px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
 `;
+
 
 export const RankingContainer = styled.div`
   width: 100%;

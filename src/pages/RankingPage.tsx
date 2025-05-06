@@ -1,32 +1,60 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as S from "../styles/Home/RankingPageStyle";
 import SearchIcon from "../assets/images/team5/Search.png";
+import { getRanking } from "../api/ranking";
 
-const dummyTop3 = [
-	{ userId: 1, phone: "1234", point: 1219 },
-	{ userId: 2, phone: "5678", point: 1023 },
-	{ userId: 3, phone: "4321", point: 963 },
-];
+// 타입 정의
+interface RankingItem {
+	phoneNumber: string;
+	point: number;
+}
 
-const dummyUsers = [
-	{ userId: 56, phone: "9876", point: 140, ranking: 4 },
-	{ userId: 1, phone: "1234", point: 1219, ranking: 1 },
-	{ userId: 2, phone: "5678", point: 1023, ranking: 2 },
-	{ userId: 3, phone: "4321", point: 963, ranking: 3 },
-	{ userId: 4, phone: "3468", point: 34, ranking: 5 },
-	{ userId: 5, phone: "9862", point: 2, ranking: 7 },
-	{ userId: 6, phone: "1204", point: 23, ranking: 6 },
-];
+interface ExtendedRankingItem extends RankingItem {
+	ranking: number;
+}
 
 export default function RankingPage() {
 	const [searchValue, setSearchValue] = useState("");
 	const [activeTab, setActiveTab] = useState("일간");
+	const [rankingData, setRankingData] = useState<ExtendedRankingItem[]>([]);
+	const inputRef = useRef<HTMLInputElement>(null);
 
-	const filteredUsers = (searchValue
-		? dummyUsers.filter((user) => user.phone.includes(searchValue))
-		: dummyUsers
-	).sort((a, b) => a.ranking - b.ranking);
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const tabMap: Record<string, "TOTAL" | "DAILY" | "WEEKLY" | "MONTHLY"> = {
+					누적: "TOTAL",
+					일간: "DAILY",
+					주간: "WEEKLY",
+					월간: "MONTHLY",
+				};
 
+				const data: RankingItem[] = await getRanking(tabMap[activeTab]);
+
+				const rankedData: ExtendedRankingItem[] = data
+					.sort((a, b) => b.point - a.point)
+					.map((item, index) => ({
+						...item,
+						ranking: index + 1,
+					}));
+
+				setRankingData(rankedData);
+			} catch (error) {
+				alert("랭킹 정보를 불러오지 못했습니다.");
+			}
+		};
+
+		fetchData();
+	}, [activeTab]);
+
+	const filteredUsers = searchValue
+		? rankingData.filter((user) =>
+			user.phoneNumber.slice(-4).includes(searchValue)
+		)
+		: rankingData;
+
+
+	const top3Users = rankingData.slice(0, 3);
 
 	return (
 		<S.Container>
@@ -34,25 +62,30 @@ export default function RankingPage() {
 
 			<S.PodiumContainer>
 				<S.Top3UserProfile>
-					<S.Top>
-						<S.Medal>🥈</S.Medal>
-						<S.InfoText>{dummyTop3[1].phone}번</S.InfoText>
-						<S.ScoreText>{dummyTop3[1].point}점</S.ScoreText>
-					</S.Top>
-					<S.Top>
-						<S.Medal>🥇</S.Medal>
-						<S.InfoText>{dummyTop3[0].phone}번</S.InfoText>
-						<S.ScoreText>{dummyTop3[0].point}점</S.ScoreText>
-					</S.Top>
-					<S.Top>
-						<S.Medal>🥉</S.Medal>
-						<S.InfoText>{dummyTop3[2].phone}번</S.InfoText>
-						<S.ScoreText>{dummyTop3[2].point}점</S.ScoreText>
-					</S.Top>
+					{top3Users[1] && (
+						<S.Top>
+							<S.Medal>🥈</S.Medal>
+							<S.InfoText>{top3Users[1].phoneNumber.slice(-4)}번</S.InfoText>
+							<S.ScoreText>{top3Users[1].point}점</S.ScoreText>
+						</S.Top>
+					)}
+					{top3Users[0] && (
+						<S.Top>
+							<S.Medal>🥇</S.Medal>
+							<S.InfoText>{top3Users[0].phoneNumber.slice(-4)}번</S.InfoText>
+							<S.ScoreText>{top3Users[0].point}점</S.ScoreText>
+						</S.Top>
+					)}
+					{top3Users[2] && (
+						<S.Top>
+							<S.Medal>🥉</S.Medal>
+							<S.InfoText>{top3Users[2].phoneNumber.slice(-4)}번</S.InfoText>
+							<S.ScoreText>{top3Users[2].point}점</S.ScoreText>
+						</S.Top>
+					)}
 				</S.Top3UserProfile>
 			</S.PodiumContainer>
 
-			{/* 필터 + 검색 */}
 			<S.FilterAndSearchWrapper>
 				<S.FilterTabs>
 					{["누적", "일간", "주간", "월간"].map((tab) => (
@@ -68,15 +101,35 @@ export default function RankingPage() {
 
 				<S.SearchContainer icon={SearchIcon}>
 					<input
+						ref={inputRef}
 						type="text"
 						placeholder="전화번호 검색"
+						inputMode="numeric"
+						pattern="[0-9]*"
 						value={searchValue}
-						onChange={(e) => setSearchValue(e.target.value)}
+						onChange={(e) => {
+							const numericOnly = e.target.value.replace(/\D/g, "");
+							setSearchValue(numericOnly);
+						}}
+						onKeyDown={(e) => {
+							if (e.key === "Enter" && inputRef.current?.value) {
+								setSearchValue(inputRef.current.value);
+							}
+						}}
 					/>
+					<button onClick={() => {
+						if (inputRef.current?.value) {
+							setSearchValue(inputRef.current.value);
+						}
+						inputRef.current?.focus();
+					}}>
+						<img src={SearchIcon} alt="검색" />
+					</button>
 				</S.SearchContainer>
+
+
 			</S.FilterAndSearchWrapper>
 
-			{/* 전체 랭킹 테이블 */}
 			<S.RankingContainer>
 				<S.RankingTable>
 					<S.TableHeader>
@@ -88,9 +141,9 @@ export default function RankingPage() {
 					</S.TableHeader>
 					<S.TableBody>
 						{filteredUsers.map((user) => (
-							<S.TableRow key={user.userId}>
+							<S.TableRow key={user.phoneNumber}>
 								<S.TableCell>{user.ranking}위</S.TableCell>
-								<S.TableCell>{user.phone}번</S.TableCell>
+								<S.TableCell>{user.phoneNumber.slice(-4)}번</S.TableCell>
 								<S.TableCell>{user.point}점</S.TableCell>
 							</S.TableRow>
 						))}
