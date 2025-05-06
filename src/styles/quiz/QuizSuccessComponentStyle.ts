@@ -6,6 +6,7 @@ export const ResultContainer = styled.div`
   background-color: white;
   align-items: center;
   padding: 20px;
+  margin: 0;
 `;
 
 export const Text = styled.div`

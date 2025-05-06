@@ -38,8 +38,12 @@ const QuizSuccess = () => {
     <S.GhostImg src={Ghost_success}/>
     <h1 style={{marginBottom:"0"}}>정답입니다!!</h1>
     <h2>퀴즈를 모두 맞혔어요!</h2>
-    <h2>{userPhone} 님의 포인트는</h2>
-    <h3>{userPoint}점 입니다.</h3>
+      <h3>
+        <span style={{fontWeight:"bold", color:"#3a8ef6"}}>{userPhone}</span> 님의
+      </h3>
+      <h3>
+        현재 포인트는 <span style={{ fontWeight: "bold", color: "red" }}>{userPoint}</span>점 입니다.
+      </h3>
       <S.ConfirmButton onClick={() => navigate("/team5")}>
         확인
       </S.ConfirmButton>
