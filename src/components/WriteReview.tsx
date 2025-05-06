@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import * as S from "../styles/Home/WriteReviewComponentStyle";
 import EachWriteReview from "./EachWriteReview";
-import { getTodayMeal, postReview } from "../api/review";
+import { getQuestions, getTodayMeal, postReview } from "../api/review";
 import { getGPTQuestion } from "../utils/gpt";
 import SubmitModal from "../components/modal/SubmitModal";
 import { useNavigate } from "react-router-dom";
@@ -76,6 +76,16 @@ const WriteReview = () => {
 			}
 		};
 		fetchTodayMeal();
+		
+		const fetchServerQuestions = async () => {
+			const serverResponse = await getQuestions(selectedMeal); // BREAKFAST/LUNCH/DINNER
+			const mapped = serverResponse.result.questions.reduce((acc: any, q: any) => {
+			acc[q.menuName] = q.content;
+			return acc;
+			}, {});
+			setQuestionMap(mapped); // 이미 있는 질문 저장
+		};
+		fetchServerQuestions();
 	};
 
 	useEffect(()=>{
@@ -91,7 +101,7 @@ const WriteReview = () => {
 
 		reviewData.forEach((item) => {
 			menuRatings[item.menu] = item.rating;
-			menuQuestions[item.menu] = item.question;
+			menuQuestions[item.menu] = questionMap[item.menu] || item.question;
 			menuAnswers[item.menu] = item.comment;
 
 		});

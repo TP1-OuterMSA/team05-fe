@@ -3,10 +3,12 @@ import styled from "styled-components";
 export const ResultContainer = styled.div`
   display: flex;
   background-color: white;
-  height: calc(100vh - 80px);
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  h3{
+    margin: 5px;
+  }
 `;
 
 export const Text = styled.div`
@@ -24,6 +26,7 @@ export const ConfirmButton = styled.button`
   margin-top: 20px;
   padding: 10px 100px;
   background: #3a8ef6;
+  margin-bottom: 50px;
   color: white;
   border: none;
   border-radius: 15px;
