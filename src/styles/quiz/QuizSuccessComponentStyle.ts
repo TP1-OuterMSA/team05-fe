@@ -5,7 +5,6 @@ export const ResultContainer = styled.div`
   flex-direction: column;
   background-color: white;
   align-items: center;
-  height: calc(100vh - 80px);
   padding: 20px;
 `;
 
@@ -25,6 +24,7 @@ export const ConfirmButton = styled.button`
   padding: 10px 100px;
   background: #3a8ef6;
   color: white;
+  margin-bottom: 50px;
   border: none;
   border-radius: 8px;
   font-size: 16px;

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as S from "../styles/quiz/QuizPageStyle"
 import HalfCircleProgress from "../components/HalfCircleProgress";
 import FileImg from "../assets/images/team5/file.png";
 import Carrot from "../assets/images/team5/carrot.png";
 import { foodListDummy } from "../api/foodListDummy";
+import PhoneModal from "../components/modal/PhoneModal";
 
 const quizData = [
   {
@@ -29,6 +30,12 @@ export default function QuizPage() {
   const [correctCount, setCorrectCount] = useState(0);
   const navigate = useNavigate();
   const listNum = foodListDummy.length;
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    // const phone = localStorage.getItem("userPhone");
+    setShowModal(true);
+  }, []);
 
   const handleOptionClick = (option: string) => {
     if (option === quizData[currentQuiz].answer) {
@@ -49,6 +56,7 @@ export default function QuizPage() {
 
   return (
     <S.Container>
+      {showModal && <PhoneModal onClose={() => setShowModal(false)} />}
         <S.Text>오늘의 학식 골든벨 퀴즈</S.Text>
         <HalfCircleProgress progress={progressPercent} /> 
         <S.QuizNumDiv>

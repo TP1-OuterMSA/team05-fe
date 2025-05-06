@@ -1,10 +1,32 @@
 import { useNavigate } from "react-router-dom";
 import * as S from "../styles/quiz/QuizFailComponentStyle";
 import ghost_icon from "../assets/images/team5/quiz_icon.png";
+import { useEffect, useState } from "react";
+import { postPoint } from "../api/quiz";
 
 
 const QuizFail = () => {
   const navigate = useNavigate();
+    const [userPhone, setUserPhone] = useState<string|null>();
+    const [userPoint, setUserPoint] = useState<string|null>();
+  
+    useEffect(() => {
+      const storedPhone = localStorage.getItem("userPhone");
+      const storedPoint = localStorage.getItem("userPoint");
+    
+      setUserPhone(storedPhone);
+      setUserPoint(storedPoint);
+      
+      const fetchPoint = async () => {
+        try {
+          const numericPoint = parseInt(storedPoint ?? "0");
+          await postPoint(storedPhone ?? "", numericPoint);
+        } catch (error) {
+          console.error("포인트 전송 실패:", error);
+        }
+      };
+      fetchPoint();
+    }, []);
 
   return (
     <S.ResultContainer>
@@ -12,6 +34,12 @@ const QuizFail = () => {
       <S.GhostImg src={ghost_icon}/>
       <h1  style={{marginBottom:"0"}}>아쉬워요...!!</h1>
       <h2>내일은 만점 도전?</h2>
+      <h3>
+        <span style={{fontWeight:"bold", color:"#3a8ef6"}}>{userPhone}</span> 님의
+      </h3>
+      <h3>
+        현재 포인트는 <span style={{ fontWeight: "bold", color: "red" }}>{userPoint}</span>점 입니다.
+      </h3>
       <S.ConfirmButton onClick={() => navigate("/team5")}>
         확인
       </S.ConfirmButton>
