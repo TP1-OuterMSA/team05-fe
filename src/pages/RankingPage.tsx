@@ -20,13 +20,13 @@ const dummyUsers = [
 
 export default function RankingPage() {
 	const [searchValue, setSearchValue] = useState("");
-	const [activeTab, setActiveTab] = useState("일간"); // 기본 탭
+	const [activeTab, setActiveTab] = useState("일간");
 
-	const filteredUsers = searchValue
+	const filteredUsers = (searchValue
 		? dummyUsers.filter((user) => user.phone.includes(searchValue))
-		: dummyUsers;
+		: dummyUsers
+	).sort((a, b) => a.ranking - b.ranking);
 
-	const currentUser = dummyUsers.find((user) => user.userId === 56); // 예시
 
 	return (
 		<S.Container>
@@ -76,11 +76,8 @@ export default function RankingPage() {
 				</S.SearchContainer>
 			</S.FilterAndSearchWrapper>
 
-			{/* 랭킹 테이블 */}
+			{/* 전체 랭킹 테이블 */}
 			<S.RankingContainer>
-				<S.MyRanking>
-					<span>마이랭킹</span> {currentUser?.ranking}위
-				</S.MyRanking>
 				<S.RankingTable>
 					<S.TableHeader>
 						<S.TableRow>

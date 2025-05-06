@@ -132,21 +132,6 @@ export const RankingContainer = styled.div`
   text-align: center;
 `;
 
-export const MyRanking = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-
-  span {
-    color: red;
-    font-size: 20px;
-    font-weight: bold;
-  }
-`;
 
 export const RankingTable = styled.table`
   width: 100%;
