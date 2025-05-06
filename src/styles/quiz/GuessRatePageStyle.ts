@@ -70,6 +70,7 @@ export const ScoreInput = styled.input`
   border-radius: 12px;
 `;
 
+
 export const SelectedText = styled.p`
   font-size: 18px;
   font-weight: 600;

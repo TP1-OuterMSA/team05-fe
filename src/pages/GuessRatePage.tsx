@@ -9,9 +9,11 @@ export default function GuessRatePage() {
 	const navigate = useNavigate();
 
 	const handleConfirm = () => {
+		// 점수 저장 (localStorage)
+		localStorage.setItem("guessRating", rating.toString());
 		alert(`예상한 점수: ${rating}점`);
-
 	};
+
 
 	return (
 		<S.Container>
@@ -27,10 +29,11 @@ export default function GuessRatePage() {
 					type="number"
 					min={0}
 					max={5}
-					step={0.5}
+					step={0.1}
 					value={rating}
 					onChange={(e) => setRating(parseFloat(e.target.value))}
 				/>
+
 				<S.StarBox>
 					<Star rating={rating} onChangeRating={setRating} />
 				</S.StarBox>
