@@ -75,7 +75,7 @@ export default function QuizPage() {
       </S.QuizBox>
       <S.ButtonBox>
         <S.SchoolRestaurantBtn onClick={() => navigate("/team5/foodList")}><S.BtnImg src={FileImg}/><div><p>학교 근처 맛집</p><p>{listNum}개</p></div></S.SchoolRestaurantBtn>
-        <S.VoteBtn onClick={()=>navigate('/team5/guessRate')}><S.BtnImg src={Carrot}/><p>제일 기대되는</p><p>학식 투표</p></S.VoteBtn>
+        <S.VoteBtn onClick={()=>navigate('/team5/guessRate')}><S.BtnImg src={Carrot}/><p>오늘의 학식</p><p>골든벨 퀴즈</p></S.VoteBtn>
       </S.ButtonBox>
     </S.Container>
   );

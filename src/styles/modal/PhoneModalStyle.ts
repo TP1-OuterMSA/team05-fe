@@ -41,15 +41,46 @@ export const Message = styled.p`
   }
 `;
 
-export const ConfirmButton = styled.button`
+export const ButtonDiv = styled.div`
+ display: flex;
+ flex-direction: row;
+`;
+
+export const CancelButton = styled.button`
   background-color: #8094B3;
-  width: 255px;
+  width: 200px;
   height: 44px;
   color: white;
   font: var(--MenuTitle);
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
+  margin: 0 20px 0 auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 40px;
+    font-size: 14px;
+
+  }
+  &:hover {
+    background: #3a8ef6;
+    color: white;
+  }
+`;
+
+export const ConfirmButton = styled.button`
+  background-color: #8094B3;
+  width: 200px;
+  height: 44px;
+  color: white;
+  font: var(--MenuTitle);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  margin: 0 auto 0 20px;
   cursor: pointer;
   transition: all 0.3s ease;
 

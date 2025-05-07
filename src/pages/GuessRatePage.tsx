@@ -1,12 +1,17 @@
 import * as S from "../styles/quiz/GuessRatePageStyle";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Star from "../components/Star";
 import GhostImg from "../assets/images/team5/QuizGhost.png";
+import AveragePhoneModal from "../components/modal/AveragePhoneModal";
 
 export default function GuessRatePage() {
 	const [rating, setRating] = useState(0); // 기존 score -> rating으로 변경
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
+	const [showModal, setShowModal] = useState(false);
+	
+	useEffect(() => {
+	  setShowModal(true);
+	}, []);
 
 	const handleConfirm = () => {
 		// 점수 저장 (localStorage)
@@ -17,6 +22,7 @@ export default function GuessRatePage() {
 
 	return (
 		<S.Container>
+			{showModal && <AveragePhoneModal onClose={() => setShowModal(false)} />}
 			<S.Title>오늘의 학식 골든벨 퀴즈</S.Title>
 			<S.Ghost src={GhostImg} alt="귀여운 유령" />
 			<S.QuestionBox>

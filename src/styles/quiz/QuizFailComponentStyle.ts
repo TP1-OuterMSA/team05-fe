@@ -5,6 +5,7 @@ export const ResultContainer = styled.div`
   background-color: white;
   flex-direction: column;
   align-items: center;
+  height: 100vh;
   padding: 20px;
   h3{
     margin: 5px;
