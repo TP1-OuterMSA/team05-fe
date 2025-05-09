@@ -1,7 +1,6 @@
 import { useState } from "react";
 import * as S from "../../styles/modal/AveragePhoneModalStyle";
 import { postPhoneNum } from "../../api/quiz";
-import AlreadyQuizModal from "./AlreadyQuizModal";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -12,7 +11,6 @@ export default function AveragePhoneModal({ onClose }: Props) {
   const navigate = useNavigate();
   const [phone, setPhone] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSameAsStored, setIsSameAsStored] = useState<boolean>(false);
 
   const handleConfirm = () => {
@@ -31,7 +29,7 @@ export default function AveragePhoneModal({ onClose }: Props) {
             onClose(); // 모달 닫기
           } else {
             onClose();
-            setIsOpen(true); // 이미 푼 상태 모달 띄우기
+            // setIsOpen(true); // 이미 푼 상태 모달 띄우기
           }
         } catch (error) {
           console.error(error);
