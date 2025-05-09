@@ -31,3 +31,12 @@ export async function postReview(
 		throw error;
 	}
 }
+
+export async function getQuestions(mealType: string){
+	try{
+		const response = await api.get(`questions?mealType=${mealType}`);
+		return response.data;
+	}catch(error) {
+		throw error;
+	}
+}
