@@ -24,15 +24,15 @@ const WantedMenu = () => {
 	};
 
 	const handleSubmit = () => {//noneselectedmenu가 선택되어있고 trim이 0이거나 배열의 길이가 0이면서 trim이 0이면
-		if ((noneSelected && (customMenu?.trim() === "" || customMenu===undefined) )||(selectedMenus.length === 0 && (customMenu?.trim() === "" || customMenu===undefined))) {
+		if ((noneSelected && (customMenu?.trim() === "" || customMenu === undefined)) || (selectedMenus.length === 0 && (customMenu?.trim() === "" || customMenu === undefined))) {
 			alert("메뉴를 선택하거나 추가 의견을 입력해주세요.");
 			return;
 		}
-		const fetchWantMenu = async() => {
-			try{
-				await postWantMenu(selectedMenus?selectedMenus:undefined, customMenu?customMenu:undefined);
+		const fetchWantMenu = async () => {
+			try {
+				await postWantMenu(selectedMenus ? selectedMenus : undefined, customMenu ? customMenu : undefined);
 				console.log('db 전송 성공');
-			}catch(error){
+			} catch (error) {
 				throw error;
 			}
 		}
@@ -46,17 +46,20 @@ const WantedMenu = () => {
 		navigate("/team5/evaluation");
 	};
 
-	useEffect(()=>{
-		const fetchGetWantMenu = async() => {
-			try{
+	useEffect(() => {
+		const fetchGetWantMenu = async () => {
+			try {
 				const data = await getWantMenu();
-				setMenuList(data.result.menuList.map((menu: { name: string; })=>menu.name));
-			}catch(error){
-				throw error;
+				console.log("불러온 메뉴 목록:", data); // ← 이 로그 찍히나요?
+				setMenuList(data);
+			} catch (error) {
+				console.error("메뉴 목록 불러오기 실패:", error);
 			}
-		}
+		};
 		fetchGetWantMenu();
-	},[])
+	}, []);
+
+
 
 
 	return (
