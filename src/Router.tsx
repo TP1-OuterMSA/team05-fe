@@ -13,6 +13,7 @@ import GuessRatePage from './pages/GuessRatePage';
 import RankingPage from './pages/RankingPage';
 import AdminLayout from './components/layout/AdminLayout';
 import { AdminWantedMenu } from './components/AdminWantedMenu';
+import { AdminQuizInput } from './components/AdminQuizInput';
 
 
 
@@ -35,6 +36,7 @@ const Router = () => {
 					<Route path="/team5/ranking" element={<RankingPage />} />
 					<Route path="/team5/ranking" element={<RankingPage />} />
 					<Route path="/team5/admin" element={<AdminLayout />}>
+						<Route path="quizInput" element={<AdminQuizInput />} />
 						<Route path="wantMenu" element={<AdminWantedMenu />} />
 						<Route path="place" element={<AdminWantedMenu />} />
 

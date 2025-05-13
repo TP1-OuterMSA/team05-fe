@@ -12,8 +12,8 @@ const AdminLayout = () => {
 		<S.Container>
 			<S.Sidebar>
 				<S.MenuButton
-					$active={pathname === "/team5/admin"}
-					onClick={() => navigate("/team5/admin")}
+					$active={pathname === "/team5/admin/quizInput"}
+					onClick={() => navigate("/team5/admin/quizInput")}
 				>
 					퀴즈 내용 입력
 				</S.MenuButton>

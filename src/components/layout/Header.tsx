@@ -16,7 +16,7 @@ const Header = () => {
 						border: "0.7px solid red",
 						color: "red",
 					}}
-					onClick={() => navigate('/team5/admin')}
+					onClick={() => navigate('/team5/admin/quizInput')}
 				>
 					<img
 						style={{ width: "23px", marginRight: "5px" }}
