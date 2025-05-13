@@ -47,8 +47,12 @@ export const AdminWantedMenu = () => {
 		setMenuList(menuList.filter((menu) => menu !== menuToDelete));
 	};
 
-	// 메뉴 저장 API 호출
 	const handleSubmit = async () => {
+		if (menuList.length === 0) {
+			alert("메뉴를 최소 1개 이상 입력해주세요.");
+			return;
+		}
+
 		try {
 			await putWantMenu(menuList);
 			alert("메뉴가 반영되었습니다.");
@@ -56,6 +60,7 @@ export const AdminWantedMenu = () => {
 			alert("저장 중 오류가 발생했습니다.");
 		}
 	};
+
 
 	return (
 		<>
