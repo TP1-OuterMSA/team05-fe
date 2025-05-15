@@ -30,88 +30,78 @@ export const AdminQuizInput = () => {
 	const navigate = useNavigate();
 
 	const handleSubmit = async () => {
-	try {
-		for (let i = 0; i < 3; i++) {
-		const currentId = i+1;
-		const currentQuestion = question[i];
-		const currentOptions = optionsList[i];
-		const currentAnswer = answers[i];
+  try {
+    let isAnyQuizChanged = false;
 
-		//질문을 하나라도 입력하지 않았을 시
-		if(currentQuestion.trim()==""){
-			alert('질문을 입력해주세요.');
-			return;
-		}
+    for (let i = 0; i < 3; i++) {
+      const currentId = i + 1;
+      const currentQuestion = question[i];
+      const currentOptions = optionsList[i];
+      const currentAnswer = answers[i];
 
-		//보기를 2개 이상 입력하지 않았을 시
-		const filledOptions = currentOptions.filter(opt => opt.trim() !== "");
-		if (filledOptions.length < 2) {
-			alert('보기를 2개 이상 입력해주세요.');
-			return;
-		}
-		
-		//0~3범위로 바꾼 다음 answer과 비교 
-		//현재는 원래 퀴즈 데이터에서 correctid를 뽑아와서 각 퀴즈의 룹을 돌린 다음 index 증가
-		//해야할건 origincard 데이터에서 correctid를 뽑아와서 answer과 비교
-		const calculatedAnswers = originCards.map((card) => {
-		const correctId = card.correctChoiceId;
-		const index = card.choiceDtoList.findIndex((choice: any) => choice.id === correctId);
-		return index; // 0~3 중 하나가 되어야 함
-		});
+      if (currentQuestion.trim() === "") {
+        alert("질문을 입력해주세요.");
+        return;
+      }
 
-		//아무것도 없는 보기에 체크 표시가 되어있을 시
-		if (optionsList[i][answers[i]].trim() === "") {
-		alert("입력된 보기에 체크 표시를 해주세요!");
-		return;
-		}
+      const filledOptions = currentOptions.filter(opt => opt.trim() !== "");
+      if (filledOptions.length < 2) {
+        alert("보기를 2개 이상 입력해주세요.");
+        return;
+      }
 
-		//각 카드가 수정되지 않았을 시
-		if (originCards?.[i]) {
-			const isSame =
-				originCards[i].question === question[i] &&
-				calculatedAnswers[i] === answers[i] &&
-				originCards[i].choiceDtoList
-					.map((choice: any) => choice.content)
-					.every((value: string, index: number) => value === optionsList[i][index].trim());
+      const calculatedAnswers = originCards.map((card) => {
+        const correctId = card.correctChoiceId;
+        const index = card.choiceDtoList.findIndex(
+          (choice: any) => choice.id === correctId
+        );
+        return index;
+      });
 
-			console.log(originCards[i].question === question[i],
-				calculatedAnswers[i] === answers[i],
-				originCards[i].choiceDtoList
-					.map((choice: any) => choice.content)
-					.every((value: string, index: number) => value === optionsList[i][index].trim()))
-			if (isSame) {
-				if(i==2){
-					alert('수정 사항이 없습니다.')
-					return;
-				}
-				continue; 
-			}
-		}
+      if (optionsList[i][answers[i]].trim() === "") {
+        alert("입력된 보기에 체크 표시를 해주세요!");
+        return;
+      }
 
+      if (originCards?.[i]) {
+        const isSame =
+          originCards[i].question === question[i] &&
+          calculatedAnswers[i] === answers[i] &&
+          originCards[i].choiceDtoList
+            .map((choice: any) => choice.content.trim())
+            .every((value: string, index: number) => value === currentOptions[index].trim());
 
-		if (
-			currentQuestion === "" &&
-			currentOptions.every(opt => opt === "") &&
-			currentAnswer === 0
-		) {
-			// 새 퀴즈: post
-			await postQuiz(currentQuestion, currentOptions, currentAnswer);
-			console.log(`퀴즈 ${i + 1}번 POST 완료`);
-		} 
-		else {
-			// 기존 퀴즈: put
-			await putQuiz(currentId, currentQuestion, currentOptions, currentAnswer);
-			console.log(`퀴즈 ${i + 1}번 PUT 완료`);
-		}
-		}
+        if (isSame) {
+          continue;
+        }
+      }
 
-		alert("반영되었습니다.");
-		navigate(0);
-	} catch (error) {
-		console.error("반영 중 오류 발생:", error);
-		alert("퀴즈 반영 중 오류가 발생했습니다.");
-	}
-	};
+      isAnyQuizChanged = true; // 하나라도 수정됨
+
+      if (
+        currentQuestion === "" &&
+        currentOptions.every(opt => opt === "") &&
+        currentAnswer === 0
+      ) {
+        await postQuiz(currentQuestion, currentOptions, currentAnswer);
+      } else {
+        await putQuiz(currentId, currentQuestion, currentOptions, currentAnswer);
+      }
+    }
+
+    if (!isAnyQuizChanged) {
+      alert("수정 사항이 없습니다.");
+      return;
+    }
+
+    alert("반영되었습니다.");
+    navigate(0);
+  } catch (error) {
+    console.error("반영 중 오류 발생:", error);
+    alert("퀴즈 반영 중 오류가 발생했습니다.");
+  }
+};
+
 
 
 	

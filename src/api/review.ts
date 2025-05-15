@@ -2,7 +2,7 @@ import { api } from ".";
 
 export async function getTodayMeal(mealType: string) {
 	try {
-		const response = await api.get(`meals/today?mealType=${mealType}`);
+		const response = await api.get(`/meals/today?mealType=${mealType}`);
 		console.log("getTodayMeal에 성공했습니다.");
 		return response.data;
 	} catch (error) {
@@ -34,7 +34,7 @@ export async function postReview(
 
 export async function getQuestions(mealType: string){
 	try{
-		const response = await api.get(`questions?mealType=${mealType}`);
+		const response = await api.get(`/questions?mealType=${mealType}`);
 		return response.data;
 	}catch(error) {
 		throw error;
