@@ -1,39 +1,46 @@
+import { useState } from 'react';
 import * as S from '../../styles/layout/HeaderStyle';
 import Logo from '../../assets/images/team5/Logo.svg';
-import Ghost from "../../assets/images/team5/ghost_btn_icon.png";
+import Ghost from '../../assets/images/team5/ghost_btn_icon.png';
+import MenuIcon from '../../assets/images/team5/Menu.png';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
 	const navigate = useNavigate();
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+	const handleNavigate = (path: string) => {
+		navigate(path);
+		setIsSidebarOpen(false); // ✅ 이동 시 사이드바 닫기
+	};
 
 	return (
 		<S.HeaderContainer>
 			<S.Inner>
+				<S.MenuImg src={MenuIcon} alt="menu" onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
 				<S.LogoImg src={Logo} alt="logo" onClick={() => navigate('/team5')} />
-				<S.QuizBtn
-					style={{
-						backgroundColor: "white",
-						border: "0.7px solid red",
-						color: "red",
-					}}
-					onClick={() => navigate('/team5/admin/quizInput')}
-				>
-					<img
-						style={{ width: "23px", marginRight: "5px" }}
-						src={Ghost}
-					/>
-					관리자 페이지
-				</S.QuizBtn>
-				<S.QuizBtn style={{ backgroundColor: "#8094B3" }} onClick={() => navigate('/team5/foodList')}><img style={{ width: "23px", marginRight: "5px" }} src={Ghost} />맛집</S.QuizBtn>
-				<S.QuizBtn style={{ backgroundColor: "rgb(235, 192, 0)" }} onClick={() => navigate('/team5/guessRate')}><img style={{ width: "23px", marginRight: "5px" }} src={Ghost} />골든벨 Quiz</S.QuizBtn>
-				<S.QuizBtn onClick={() => navigate('/team5/quiz')}><img style={{ width: "23px", marginRight: "5px" }} src={Ghost} />Quiz</S.QuizBtn>
-				<S.QuizBtn onClick={() => navigate('/team5/ranking')}><img style={{ width: "23px", marginRight: "5px" }} src={Ghost} />Ranking</S.QuizBtn>
-				{/* <S.Text>{isMobile ? "홍길동님" : "홍길동님 환영합니다"}</S.Text>
+				<S.Text>홍길동님 환영합니다.</S.Text>
 				<S.LoginBtn>
-					<S.LoginImg src={LoginIcon} />
+					<S.LoginImg src={Ghost} />
 					프로필
-				</S.LoginBtn> */}
+				</S.LoginBtn>
 			</S.Inner>
+
+			{isSidebarOpen && (
+				<>
+					<S.Backdrop onClick={() => setIsSidebarOpen(false)} />
+					<S.Sidebar>
+						<S.SidebarMenu onClick={() => handleNavigate('/team5/admin/quizInput')}>
+							<b style={{ color: 'red' }}>관리자 페이지</b>
+							<span>▶</span>
+						</S.SidebarMenu>
+						<S.SidebarMenu onClick={() => handleNavigate('/team5/foodList')}>맛집<span>▶</span></S.SidebarMenu>
+						<S.SidebarMenu onClick={() => handleNavigate('/team5/guessRate')}>골든벨 Quiz<span>▶</span></S.SidebarMenu>
+						<S.SidebarMenu onClick={() => handleNavigate('/team5/quiz')}>Quiz<span>▶</span></S.SidebarMenu>
+						<S.SidebarMenu onClick={() => handleNavigate('/team5/ranking')}>Ranking<span>▶</span></S.SidebarMenu>
+					</S.Sidebar>
+				</>
+			)}
 		</S.HeaderContainer>
 	);
 };

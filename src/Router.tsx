@@ -14,6 +14,7 @@ import RankingPage from './pages/RankingPage';
 import AdminLayout from './components/layout/AdminLayout';
 import { AdminWantedMenu } from './components/AdminWantedMenu';
 import { AdminQuizInput } from './components/AdminQuizInput';
+import { AdminFoodList } from './components/AdminFoodListInput';
 
 
 
@@ -38,7 +39,7 @@ const Router = () => {
 					<Route path="/team5/admin" element={<AdminLayout />}>
 						<Route path="quizInput" element={<AdminQuizInput />} />
 						<Route path="wantMenu" element={<AdminWantedMenu />} />
-						<Route path="place" element={<AdminWantedMenu />} />
+						<Route path="foodListInput" element={<AdminFoodList />} />
 
 					</Route>
 				</Routes>
