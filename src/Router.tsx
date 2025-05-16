@@ -11,6 +11,10 @@ import FoodListPage from './pages/FoodListPage';
 import FoodDetailPage from './pages/FoodDetailPage';
 import GuessRatePage from './pages/GuessRatePage';
 import RankingPage from './pages/RankingPage';
+import AdminLayout from './components/layout/AdminLayout';
+import { AdminWantedMenu } from './components/AdminWantedMenu';
+import { AdminQuizInput } from './components/AdminQuizInput';
+
 
 
 const Router = () => {
@@ -30,9 +34,16 @@ const Router = () => {
 					<Route path="/team5/evaluation" element={<ViewReviewPage />} />
 					<Route path="/team5/guessRate" element={<GuessRatePage />} />
 					<Route path="/team5/ranking" element={<RankingPage />} />
+					<Route path="/team5/ranking" element={<RankingPage />} />
+					<Route path="/team5/admin" element={<AdminLayout />}>
+						<Route path="quizInput" element={<AdminQuizInput />} />
+						<Route path="wantMenu" element={<AdminWantedMenu />} />
+						<Route path="place" element={<AdminWantedMenu />} />
+
+					</Route>
 				</Routes>
 			</Layout>
-		</BrowserRouter>
+		</BrowserRouter >
 	);
 };
 
