@@ -40,7 +40,7 @@ export const QuizCard:React.FC<QuizCardProps> = ({index, question, setQuestion, 
 			<S.QuizText>퀴즈{index+1}</S.QuizText>
 			<S.QuizInputDiv>
 				<S.Text style={{color:canEdit?"black":"#6D717D"}}>질문을 입력해주세요.</S.Text>
-				<S.QuestionInput $canedit={canEdit} value={question?question:""} placeholder={question.trim()!=""?question:"질문을 입력해주세요."} onChange={(e) => setQuestion(e.target.value)} readOnly={!canEdit}/>
+				<S.QuestionInput $canedit={canEdit} value={question?question:""} placeholder={question?.trim()!=""?question:"질문을 입력해주세요."} onChange={(e) => setQuestion(e.target.value)} readOnly={!canEdit}/>
 				<S.Text style={{color:canEdit?"black":"#6D717D"}}>보기를 입력해주세요.</S.Text>
 				<S.OptionDiv>
 					{options?.map((value, index)=>(

@@ -4,8 +4,10 @@ import { FoodListCard } from "./FoodListCard";
 import * as S from "../styles/admin/AdminFoodListInputComponentStyle";
 import PlusIcon from "../assets/images/team5/PlusCircleBig.png";
 import GhostIcon from "../assets/images/team5/ghost_btn_icon.png";
+import { getStore, postStore } from "../api/adminFoodList";
 
 interface FoodCard {
+	id?: number|null;
 	type: string;
 	name: string;
 	image: File | null;
@@ -15,12 +17,24 @@ interface FoodCard {
 
 export const AdminFoodList = () => {
 	const [cards, setCards] = useState<FoodCard[]>([...Array(4)].map(() => ({
+		id: null,
 		type: "",
 		name: "",
 		image: null,
 		description: "",
 		link: ""
 	})));
+	const urlToFile = async (url: string) => {
+		console.log(url);
+		const response = await fetch(url);
+		console.log("dfdf");
+		const data = await response.blob();
+		console.log("cccc");
+		const ext = url.split(".").pop(); // url 구조에 맞게 수정할 것
+		const filename = url.split("/").pop(); // url 구조에 맞게 수정할 것
+		const metadata = { type: `image/${ext === "svg" ? "svg+xml" : ext}` };
+		return new File([data], filename!, metadata);
+	};
 
 	const handleUpdateCard = (index: number, updatedCard: FoodCard) => {
 		const newCards = [...cards];
@@ -34,6 +48,29 @@ export const AdminFoodList = () => {
 	const handleDeleteCard = (index: number) => {
 		setCards(cards.filter((_, i) => i !== index));
 	};
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await getStore();
+				const data = response.result.stores;
+				const loadedCards = data.map((item: any) => ({
+					type: item.storeType,
+					name: item.name,
+					image: urlToFile(item.image), // 서버에선 File이 없으므로 null
+					description: item.description,
+					link: item.url,
+					id: item.id, // ID도 같이 저장 (삭제/업데이트에 사용)
+				}));
+				setCards(loadedCards);
+			} catch (error) {
+				console.error("맛집 데이터를 불러오는 데 실패했습니다.", error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
 
 	return (
 		<>
@@ -61,7 +98,7 @@ export const AdminFoodList = () => {
 				</S.CardWrap>
 			</S.Container>
 
-			<S.SubmitButton onClick={() => {
+			<S.SubmitButton onClick={async () => {
 				const isAllFilled = cards.every((card) =>
 					card.type.trim() !== "" &&
 					card.name.trim() !== "" &&
@@ -75,12 +112,26 @@ export const AdminFoodList = () => {
 					return;
 				}
 
-				alert("반영되었습니다!");
+				try {
+					for (const card of cards) {
+						await postStore(
+							card.id ?? 0, // 새로 만든 건 id 없음
+							card.type,
+							card.name,
+							card.description,
+							card.link,
+							card.image as File
+						);
+					}
+
+					alert("반영되었습니다!");
+				} catch (error) {
+					console.error("맛집 반영 중 오류 발생:", error);
+					alert("반영 중 오류가 발생했습니다.");
+				}
 			}}>
 				반영하기
 			</S.SubmitButton>
-
-
 		</>
 	);
 };

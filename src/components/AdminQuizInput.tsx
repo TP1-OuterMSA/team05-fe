@@ -109,6 +109,7 @@ export const AdminQuizInput = () => {
 	const fetchQuiz = async () => {
 		try {
 			const response = await getQuiz();
+			console.log(response);
 			const quizList = response.result.quizzes.slice(0, 3); // 최대 3개만 사용
 
 			const questions = quizList.map((quiz: any) => quiz.question);
