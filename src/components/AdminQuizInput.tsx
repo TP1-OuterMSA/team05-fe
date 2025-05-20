@@ -30,7 +30,8 @@ export const AdminQuizInput = () => {
 	const navigate = useNavigate();
 
 	const handleSubmit = async () => {
-  try {
+  	try {
+	
     let isAnyQuizChanged = false;
 
     for (let i = 0; i < 3; i++) {
@@ -77,7 +78,6 @@ export const AdminQuizInput = () => {
       }
 
       isAnyQuizChanged = true; // 하나라도 수정됨
-
       if (
         currentQuestion === "" &&
         currentOptions.every(opt => opt === "") &&
@@ -101,9 +101,6 @@ export const AdminQuizInput = () => {
     alert("퀴즈 반영 중 오류가 발생했습니다.");
   }
 };
-
-
-
 	
 	useEffect(() => {
 	const fetchQuiz = async () => {
@@ -145,28 +142,29 @@ export const AdminQuizInput = () => {
 				<S.QuizDiv>
 					{[0, 1, 2].map((_, index)=>(
 						<QuizCard
-							key={index}
-							index={index}
-							question={question[index]}
-							setQuestion={(val) => {
+						key={index}
+						index={index}
+						question={question[index] ?? ""}
+						setQuestion={(val) => {
 							const newQuestions = [...question];
 							newQuestions[index] = val;
 							setQuestion(newQuestions);
-							}}
-							options={optionsList[index]}
-							setOptions={(newOpts) => {
+						}}
+						options={optionsList[index] ?? ["", "", "", ""]}
+						setOptions={(newOpts) => {
 							const newList = [...optionsList];
 							newList[index] = newOpts;
 							setOptionsList(newList as [string, string, string, string][]);
-							}}
-							answer={answers[index]}
-							setAnswer={(val) => {
+						}}
+						answer={answers[index] ?? 0}
+						setAnswer={(val) => {
 							const newAnswers = [...answers];
 							newAnswers[index] = val;
 							setAnswers(newAnswers);
-							}}
-							canEdit={isEditing}
+						}}
+						canEdit={isEditing}
 						/>
+
 					))}
 				</S.QuizDiv>
 			</S.Container>
