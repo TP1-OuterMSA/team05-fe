@@ -50,26 +50,31 @@ export const AdminFoodList = () => {
 	};
 
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await getStore();
-				const data = response.result.stores;
-				const loadedCards = data.map((item: any) => ({
+	const fetchData = async () => {
+		try {
+			const response = await getStore();
+			const data = response.result.stores;
+
+			const loadedCards = await Promise.all(
+				data.map(async (item: any) => ({
 					type: item.storeType,
 					name: item.name,
-					image: urlToFile(item.image), // 서버에선 File이 없으므로 null
+					image: await urlToFile(item.image), // ✅ 올바른 await 사용
 					description: item.description,
 					link: item.url,
-					id: item.id, // ID도 같이 저장 (삭제/업데이트에 사용)
-				}));
-				setCards(loadedCards);
-			} catch (error) {
-				console.error("맛집 데이터를 불러오는 데 실패했습니다.", error);
-			}
-		};
+					id: item.id,
+				}))
+			);
 
-		fetchData();
-	}, []);
+			setCards(loadedCards);
+		} catch (error) {
+			console.error("맛집 데이터를 불러오는 데 실패했습니다.", error);
+		}
+	};
+
+	fetchData();
+}, []);
+
 
 
 	return (
@@ -115,7 +120,7 @@ export const AdminFoodList = () => {
 				try {
 					for (const card of cards) {
 						await postStore(
-							card.id ?? 0, // 새로 만든 건 id 없음
+							card.id ?? 0,
 							card.type,
 							card.name,
 							card.description,

@@ -31,7 +31,7 @@ export const QuizCard:React.FC<QuizCardProps> = ({index, question, setQuestion, 
 	const handleInputChange = (index: number, value: string) => {
 		const newOptions = [...options];
 		newOptions[index] = value;
-		setOptions(newOptions as [string, string, string, string]);
+		setOptions(newOptions as [string, string, string, string])
 	};
 
 
@@ -40,15 +40,30 @@ export const QuizCard:React.FC<QuizCardProps> = ({index, question, setQuestion, 
 			<S.QuizText>퀴즈{index+1}</S.QuizText>
 			<S.QuizInputDiv>
 				<S.Text style={{color:canEdit?"black":"#6D717D"}}>질문을 입력해주세요.</S.Text>
-				<S.QuestionInput $canedit={canEdit} value={question?question:""} placeholder={question?.trim()!=""?question:"질문을 입력해주세요."} onChange={(e) => setQuestion(e.target.value)} readOnly={!canEdit}/>
+				<S.QuestionInput $canedit={canEdit} value={question?question:""} placeholder={question?.trim()!=""?"질문을 입력해주세요.":question} onChange={(e) => setQuestion(e.target.value)} readOnly={!canEdit}/>
 				<S.Text style={{color:canEdit?"black":"#6D717D"}}>보기를 입력해주세요.</S.Text>
 				<S.OptionDiv>
-					{options?.map((value, index)=>(
-						<S.OptionPersonalDiv key={index}>
-							<S.OptionPersonalText style={{color:canEdit?"black":"#6D717D"}}>{index+1}번.</S.OptionPersonalText>
-							<S.OptionPersonalInput $canedit={canEdit} value={value?value:""} placeholder={value?value:"보기를 입력해주세요."} onChange={(e) => handleInputChange(index, e.target.value)} readOnly={!canEdit}/>
-							<S.OptionPersonalImg src={index==answer?Check:NonCheck} onClick={()=>{if(value.trim()!==""){handleCheck(index);}}}/>
-						</S.OptionPersonalDiv>
+					{[0, 1, 2, 3].map((_, index) => (
+					<S.OptionPersonalDiv key={index}>
+						<S.OptionPersonalText style={{ color: canEdit ? "black" : "#6D717D" }}>
+						{index + 1}번.
+						</S.OptionPersonalText>
+						<S.OptionPersonalInput
+						$canedit={canEdit}
+						value={options?.[index] ?? ""}
+						placeholder={options?.[index] ?? "보기를 입력해주세요."}
+						onChange={(e) => handleInputChange(index, e.target.value)}
+						readOnly={!canEdit}
+						/>
+						<S.OptionPersonalImg
+						src={index === answer ? Check : NonCheck}
+						onClick={() => {
+							if ((options?.[index] ?? "").trim() !== "") {
+							handleCheck(index);
+							}
+						}}
+						/>
+					</S.OptionPersonalDiv>
 					))}
 				</S.OptionDiv>
 			</S.QuizInputDiv>
