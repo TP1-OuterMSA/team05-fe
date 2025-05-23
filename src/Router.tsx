@@ -10,6 +10,7 @@ import QuizPage from './pages/QuizPage';
 import FoodListPage from './pages/FoodListPage';
 import FoodDetailPage from './pages/FoodDetailPage';
 import GuessRatePage from './pages/GuessRatePage';
+import QuizResultPage from './pages/QuizResultPage';
 import RankingPage from './pages/RankingPage';
 import AdminLayout from './components/layout/AdminLayout';
 import { AdminWantedMenu } from './components/AdminWantedMenu';
@@ -42,6 +43,7 @@ const Router = () => {
 						<Route path="foodListInput" element={<AdminFoodList />} />
 
 					</Route>
+					<Route path="/team5/guessRateResult" element={<QuizResultPage />} />
 				</Routes>
 			</Layout>
 		</BrowserRouter >
