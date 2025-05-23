@@ -5,6 +5,7 @@ import * as S from "../styles/admin/AdminFoodListInputComponentStyle";
 import PlusIcon from "../assets/images/team5/PlusCircleBig.png";
 import GhostIcon from "../assets/images/team5/ghost_btn_icon.png";
 import { getStore, postStore } from "../api/adminFoodList";
+import { useNavigate } from "react-router-dom";
 
 interface FoodCard {
 	id?: number | null;
@@ -16,6 +17,7 @@ interface FoodCard {
 }
 
 export const AdminFoodList = () => {
+	const navigate = useNavigate();
 	const [cards, setCards] = useState<FoodCard[]>([...Array(4)].map(() => ({
 		id: null,
 		type: "",
@@ -130,6 +132,7 @@ export const AdminFoodList = () => {
 					}
 
 					alert("반영되었습니다!");
+					navigate(0);
 				} catch (error) {
 					console.error("맛집 반영 중 오류 발생:", error);
 					alert("반영 중 오류가 발생했습니다.");
