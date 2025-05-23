@@ -7,7 +7,7 @@ import GhostIcon from "../assets/images/team5/ghost_btn_icon.png";
 import { getStore, postStore } from "../api/adminFoodList";
 
 interface FoodCard {
-	id?: number|null;
+	id?: number | null;
 	type: string;
 	name: string;
 	image: File | null;
@@ -50,30 +50,30 @@ export const AdminFoodList = () => {
 	};
 
 	useEffect(() => {
-	const fetchData = async () => {
-		try {
-			const response = await getStore();
-			const data = response.result.stores;
+		const fetchData = async () => {
+			try {
+				const response = await getStore();
+				const data = response.result.stores;
 
-			const loadedCards = await Promise.all(
-				data.map(async (item: any) => ({
-					type: item.storeType,
-					name: item.name,
-					image: await urlToFile(item.image), // ✅ 올바른 await 사용
-					description: item.description,
-					link: item.url,
-					id: item.id,
-				}))
-			);
+				const loadedCards = await Promise.all(
+					data.map(async (item: any) => ({
+						type: item.storeType,
+						name: item.name,
+						image: await urlToFile(item.image),
+						description: item.description,
+						link: item.url,
+						id: item.id,
+					}))
+				);
 
-			setCards(loadedCards);
-		} catch (error) {
-			console.error("맛집 데이터를 불러오는 데 실패했습니다.", error);
-		}
-	};
+				setCards(loadedCards);
+			} catch (error) {
+				console.error("맛집 데이터를 불러오는 데 실패했습니다.", error);
+			}
+		};
 
-	fetchData();
-}, []);
+		fetchData();
+	}, []);
 
 
 

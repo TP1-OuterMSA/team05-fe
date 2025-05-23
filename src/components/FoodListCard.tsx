@@ -7,7 +7,7 @@ import { deleteStore } from "../api/adminFoodList";
 interface FoodCardProps {
 	index: number;
 	data: {
-		id?:number|null;
+		id?: number | null;
 		type: string;
 		name: string;
 		image: File | null;
@@ -53,21 +53,21 @@ export const FoodListCard: React.FC<FoodCardProps> = ({ index, data, onUpdate, o
 			<S.CardContainer>
 				<S.Label>식당 종류를 선택해주세요.</S.Label>
 				<S.Select
-				onChange={(e) => handleTypeChange("type", e.target.value)}
-				value={
-					{
-					"RESTAURANT": "음식점",
-					"CAFE": "카페",
-					"BAR": "술집",
-					"ETC": "기타",
-					}[data.type] || ""
-				}
+					onChange={(e) => handleTypeChange("type", e.target.value)}
+					value={
+						{
+							"RESTAURANT": "음식점",
+							"CAFE": "카페",
+							"BAR": "술집",
+							"ETC": "기타",
+						}[data.type] || ""
+					}
 				>
-				<option value="">선택</option>
-				<option value="음식점">음식점</option>
-				<option value="카페">카페</option>
-				<option value="술집">술집</option>
-				<option value="기타">기타</option>
+					<option value="">선택</option>
+					<option value="음식점">음식점</option>
+					<option value="카페">카페</option>
+					<option value="술집">술집</option>
+					<option value="기타">기타</option>
 				</S.Select>
 
 
