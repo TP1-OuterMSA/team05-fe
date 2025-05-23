@@ -16,7 +16,7 @@ const Star: React.FC<StarProps> = ({ rating, onChangeRating }) => {
 	const [stars, setStars] = useState<number[]>([0, 0, 0, 0, 0]); // 0: 빈 별, 1: 반 별, 2: 꽉 찬 별
 
 
-	//지피티 코드 입니다............
+
 	const handleClick = (index: number) => {
 		const updatedStars: number[] = stars.map((_value, i) => {
 			if (i < index) return 2;
@@ -31,7 +31,7 @@ const Star: React.FC<StarProps> = ({ rating, onChangeRating }) => {
 		console.log(`${newRating}점`);
 	};
 
-	//지피티 코드 입니다............
+
 	useEffect(() => {
 		const fullStars = Math.floor(rating); // 꽉 찬 별 개수
 		const halfStar = rating % 1 >= 0.5 ? 1 : 0; // 반 별 존재 여부
