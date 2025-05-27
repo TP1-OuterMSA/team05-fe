@@ -1,14 +1,54 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
+import { postToken } from '../api/review';
 
 interface QrScannerProps {
-    onScanSuccess: (result: string) => void;
+    isAuthorized: boolean
+    setIsAuthorized: (result: boolean) => void;
+    setToken: (result: string) => void;
 }
 
-const QrScanner: React.FC<QrScannerProps> = ({ onScanSuccess }) => {
+const QrScanner: React.FC<QrScannerProps> = ({ isAuthorized, setIsAuthorized, setToken }) => {
     const hasStartedRef = useRef(false);
     const qrCodeRegionId = 'html5qr-code-full-region';
     const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+    const closeRef = useRef(false);
+
+
+    //qr 확인 함수
+    const handleQrScan = (result: string) => {
+        if (isAuthorized) return;
+
+        if (!result.startsWith("team5-toReviewQR")) {
+            alert("올바른 QR 코드를 스캔해주세요.");
+            return;
+        }
+
+        let isValid: boolean;
+
+        const fetchToken = async () => {
+            try {
+                const response = await postToken(result);
+                isValid = response.result;
+
+                // ✅ 여기서 후속 로직 실행
+                if (isValid) {
+                    closeRef.current = true;
+                    // console.log(close);
+                    setToken(result);
+                    setIsAuthorized(true);
+                } else {
+                    setIsAuthorized(false);
+                    alert("이미 리뷰를 작성하셨습니다.");
+                }
+            } catch (error) {
+                alert("QR 코드 검증 중 오류가 발생했습니다.");
+            }
+        };
+
+        // ✅ 실제로 실행
+        fetchToken();
+    };
 
     useEffect(() => {
         const config = {
@@ -30,10 +70,18 @@ const QrScanner: React.FC<QrScannerProps> = ({ onScanSuccess }) => {
                             cameraId,
                             config,
                             (decodedText) => {
-                                // html5QrCode.stop().then(() => {
-                                hasStartedRef.current = false;
-                                onScanSuccess(decodedText); // 👉 부모에게 전달
-                                // });
+                                if (decodedText.startsWith("team5-toReviewQR")) {
+                                    handleQrScan(decodedText); // ✅ 부모에 데이터 전달
+                                    hasStartedRef.current = false;
+
+                                    if (closeRef.current) {
+                                        html5QrCode.stop().then(() => {
+                                            html5QrCode.clear();
+                                        });
+                                    }
+                                } else {
+                                    alert("올바른 QR 코드를 스캔해주세요.");
+                                }
                             },
                             (_) => {
                             }

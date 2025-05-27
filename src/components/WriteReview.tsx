@@ -26,7 +26,7 @@ interface TodayMeal {
 
 const WriteReview = () => {
 	const [token, setToken] = useState<string>();
-	const [isAuthorized, setIsAuthorized] = useState(false);
+	const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
 	const navigate = useNavigate();
 	const [mealType, setMealType] = useState<MealType>("조식");
 	const [noneMeal, setNoneMeal] = useState<string>("");
@@ -38,21 +38,58 @@ const WriteReview = () => {
 	const [questionMap, setQuestionMap] = useState<{ [menu: string]: string }>({});
 	const [showModal, setShowModal] = useState(false);
 
-	const handleQrScan = async (result: string) => {
-		setToken(result);
-		if (result.startsWith("team5-toReviewQR")) {
-			const response = await postToken(result);
-			const isValid = response.result; // await validateQR(result); // ← 실제 검증 API
 
-			if (isValid) {
-				setIsAuthorized(true);
-			} else {
-				alert("이미 리뷰를 작성하셨습니다.");
-			}
-		} else {
+	//제출을 위해 처리하는 함수
+	const handleSubmitClick = () => {
+		const allFilled = reviewData.every((item) =>
+			item.rating !== 0 && item.comment.trim() !== ""
+		);
+		const isWholeReviewFilled = wholeReview.trim() !== "";
+		const isFreeReviewFilled = freeReview.trim() !== "";
+
+		if (allFilled && isWholeReviewFilled && isFreeReviewFilled) {
+			handlePostReview();
+			setShowModal(true);
+			//서버로 정보 넘기는 코드
+		} else alert('모든 메뉴에 리뷰를 남겨주세요!');
+	}
+
+	//qr 확인 함수
+	const handleQrScan = (result: string) => {
+		if (isAuthorized) return;
+
+		if (!result.startsWith("team5-toReviewQR")) {
 			alert("올바른 QR 코드를 스캔해주세요.");
+			return;
 		}
+
+		let isValid: boolean;
+
+		const fetchToken = async () => {
+			try {
+				const response = await postToken(result);
+				isValid = response.result;
+
+				// ✅ 여기서 후속 로직 실행
+				if (isValid) {
+					setToken(result);
+					setIsAuthorized(true);
+				} else {
+					setIsAuthorized(false);
+					alert("이미 리뷰를 작성하셨습니다.");
+				}
+			} catch (error) {
+				alert("QR 코드 검증 중 오류가 발생했습니다.");
+			}
+		};
+
+		// ✅ 실제로 실행
+		fetchToken();
 	};
+
+
+
+
 
 	//mealtype이 바뀔 때마다 식단 list 초기화
 	const handleMealTypeChange = (type: MealType) => {
@@ -69,20 +106,8 @@ const WriteReview = () => {
 		setFreeReview("");
 	}
 
-	const handleSubmitClick = () => {
-		const allFilled = reviewData.every((item) =>
-			item.rating !== 0 && item.comment.trim() !== ""
-		);
-		const isWholeReviewFilled = wholeReview.trim() !== "";
-		const isFreeReviewFilled = freeReview.trim() !== "";
 
-		if (allFilled && isWholeReviewFilled && isFreeReviewFilled) {
-			handlePostReview();
-			setShowModal(true);
-			//서버로 정보 넘기는 코드
-		} else alert('모든 메뉴에 리뷰를 남겨주세요!');
-	}
-
+	//질문 받아오고 mealtype 데이터 받아오기 함수
 	const handleGetMeal = (selectedMeal: string) => {
 		const fetchTodayMeal = async () => {
 			try {
@@ -107,12 +132,32 @@ const WriteReview = () => {
 		fetchServerQuestions();
 	};
 
-	useEffect(() => {
-		if (mealType == "조식") handleGetMeal("BREAKFAST");
-		else if (mealType == "중식") handleGetMeal("LUNCH");
-		else if (mealType == "석식") handleGetMeal("DINNER");
-	}, [mealType])
+	//
+	const fetchServerQuestions = async (mealType: 'BREAKFAST' | 'LUNCH' | 'DINNER') => {
+		const serverResponse = await getQuestions(mealType);
+		const mapped = serverResponse.result.questions.reduce((acc: any, q: any) => {
+			acc[q.menuName] = q.content;
+			return acc;
+		}, {});
+		setQuestionMap(mapped);
+	};
 
+	useEffect(() => {
+		const run = async () => {
+			let selected: 'BREAKFAST' | 'LUNCH' | 'DINNER' | null = null;
+			if (mealType === "조식") selected = "BREAKFAST";
+			else if (mealType === "중식") selected = "LUNCH";
+			else if (mealType === "석식") selected = "DINNER";
+			if (!selected) return;
+
+			await handleGetMeal(selected); // todayMeal 설정
+			await fetchServerQuestions(selected); // 서버 질문 불러오기
+		};
+
+		run();
+	}, [mealType, close]);
+
+	//실제 제출 함수
 	const handlePostReview = async () => {
 		const menuRatings: { [menu: string]: number } = {};
 		const menuAnswers: { [menu: string]: string } = {};
@@ -145,19 +190,21 @@ const WriteReview = () => {
 		}
 	}
 
+	//mealtype과 질문이 바꼈을때 질문 리스트 바꾸는 함수
 	useEffect(() => {
-		if (todayMeal) {
-			setReviewData(
-				todayMeal.menuNames.map((menu) => ({
-					menu,
-					rating: 0,
-					question: `${menu}의 질문 생성중...`,
-					comment: "",
-				}))
-			);
-		}
-	}, [todayMeal]);
+		if (!todayMeal) return;
 
+		setReviewData(
+			todayMeal.menuNames.map((menu) => ({
+				menu,
+				rating: 0,
+				question: questionMap[menu] || `${menu}의 질문 생성중...`,
+				comment: "",
+			}))
+		);
+	}, [todayMeal, questionMap]);
+
+	//mealtype이 바꼈을 때 질문 생성 함수
 	useEffect(() => {
 		const fetchQuestionsInParallel = async () => {
 			if (!todayMeal) return;
@@ -171,7 +218,7 @@ const WriteReview = () => {
 						return { [menu]: "❌ 질문 생성 실패" };
 					}
 				}
-				return { [menu]: questionMap[menu] };
+				return {}; // 이미 있는 질문은 새로 생성 안 함
 			});
 
 			const results = await Promise.all(promises);
@@ -179,24 +226,10 @@ const WriteReview = () => {
 			setQuestionMap((prev) => ({ ...prev, ...newQuestions }));
 		};
 
-		// 👇 useEffect 내부에서 실행
 		fetchQuestionsInParallel();
-	}, [mealType, todayMeal]);
+	}, [todayMeal, close]);
 
-
-	useEffect(() => {
-		if (!todayMeal) return;
-
-		const updatedReviewData = todayMeal.menuNames.map((menu) => ({
-			menu,
-			rating: 0,
-			question: questionMap[menu] || `${menu}의 맛은 어땠나요?`,
-			comment: "",
-		}));
-
-		setReviewData(updatedReviewData);
-	}, [questionMap]);
-
+	//모달에서 홈으로 가기 함수
 	const handleConfirm = () => {
 		setShowModal(false);
 		navigate("/team5");
@@ -206,7 +239,7 @@ const WriteReview = () => {
 	return (
 		<>
 			{!isAuthorized ? (
-				<QrScanner onScanSuccess={handleQrScan} />
+				<QrScanner isAuthorized={isAuthorized} setIsAuthorized={setIsAuthorized} setToken={setToken} />
 			) : (
 				<>
 					<S.ReviewDiv>
