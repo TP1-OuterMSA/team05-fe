@@ -6,6 +6,7 @@ interface QrScannerProps {
 }
 
 const QrScanner: React.FC<QrScannerProps> = ({ onScanSuccess }) => {
+    const hasStartedRef = useRef(false);
     const qrCodeRegionId = 'html5qr-code-full-region';
     const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
 
@@ -22,21 +23,26 @@ const QrScanner: React.FC<QrScannerProps> = ({ onScanSuccess }) => {
             if (devices && devices.length) {
                 const cameraId = devices[0].id;
 
-                html5QrCode
-                    .start(
-                        cameraId,
-                        config,
-                        (decodedText) => {
-                            html5QrCode.stop().then(() => {
+                if (!hasStartedRef.current) {
+                    hasStartedRef.current = true;
+                    html5QrCode
+                        .start(
+                            cameraId,
+                            config,
+                            (decodedText) => {
+                                // html5QrCode.stop().then(() => {
+                                hasStartedRef.current = false;
                                 onScanSuccess(decodedText); // 👉 부모에게 전달
-                            });
-                        },
-                        (_) => {
-                        }
-                    )
-                    .catch((err) => {
-                        console.error("Camera start error:", err);
-                    });
+                                // });
+                            },
+                            (_) => {
+                            }
+                        )
+                        .catch((err) => {
+                            console.error("Camera start error:", err);
+                            hasStartedRef.current = false;
+                        });
+                }
             }
         });
 
