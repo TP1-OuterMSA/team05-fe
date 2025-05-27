@@ -11,6 +11,7 @@ export async function getTodayMeal(mealType: string) {
 }
 
 export async function postReview(
+	token: string,
 	mealId: number,
 	menuRatings: { [menu: string]: number },
 	overallOpinion: string | null,
@@ -20,6 +21,7 @@ export async function postReview(
 ) {
 	try {
 		await api.post(`/reviews`, {
+			token,
 			mealId,
 			menuRatings,
 			overallOpinion,
@@ -37,6 +39,23 @@ export async function getQuestions(mealType: string){
 		const response = await api.get(`/questions?mealType=${mealType}`);
 		return response.data;
 	}catch(error) {
+		throw error;
+	}
+}
+
+export async function postToken(token: string){
+	try{
+		const response = await api.get(`/reviews/token/${token}`);
+		return response.data;
+	}catch(error){
+		throw error;
+	}
+}
+
+export async function postTestToken(token: string){
+	try{
+		await api.get(`/reviews/check/${token}`);
+	}catch(error){
 		throw error;
 	}
 }

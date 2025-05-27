@@ -34,7 +34,7 @@ export const AddCard = styled.div`
   border: 2px dashed #ccc;
   border-radius: 8px;
   padding: 30px;
-  width: 320px;
+  width: 300px;
   height: 370px;
   cursor: pointer;
   color: #666;

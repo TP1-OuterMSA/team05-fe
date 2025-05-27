@@ -3,20 +3,32 @@ import { useEffect, useState } from "react";
 import Star from "../components/Star";
 import GhostImg from "../assets/images/team5/QuizGhost.png";
 import AveragePhoneModal from "../components/modal/AveragePhoneModal";
+import { postGuessRate } from "../api/guessRate";
 
 export default function GuessRatePage() {
 	const [rating, setRating] = useState(0); // 기존 score -> rating으로 변경
 	// const navigate = useNavigate();
 	const [showModal, setShowModal] = useState(false);
-	
+
 	useEffect(() => {
-	  setShowModal(true);
+		setShowModal(true);
 	}, []);
 
 	const handleConfirm = () => {
 		// 점수 저장 (localStorage)
 		localStorage.setItem("guessRating", rating.toString());
-		alert(`예상한 점수: ${rating}점`);
+
+		const handleGuessRate = async () => {
+			const phoneNumber = localStorage.getItem("userPhone");
+			const today = new Date().toISOString().slice(0, 10);
+			try {
+				if (phoneNumber) await postGuessRate(rating, phoneNumber, today);
+			}
+			catch (error) { console.log(error); }
+		}
+
+		handleGuessRate();
+		// alert(`예상한 점수: ${rating}점`);
 	};
 
 

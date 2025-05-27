@@ -12,7 +12,7 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ onClose, onConfirm }) => {
 			<S.ModalBox>
 				<S.CloseButton onClick={onClose}>×</S.CloseButton>
 				<S.Message>의견을 제출해주셔서 감사합니다.</S.Message>
-				<S.ConfirmButton onClick={onConfirm}>리뷰 게시판으로 이동</S.ConfirmButton>
+				<S.ConfirmButton onClick={onConfirm}>홈으로 이동</S.ConfirmButton>
 			</S.ModalBox>
 		</S.Backdrop>
 	);

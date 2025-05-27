@@ -1,5 +1,3 @@
-// src/components/Calendar.tsx
-import React from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { CustomCalendarStyle } from "../styles/quiz/CalendarComponentStyle";
@@ -14,7 +12,11 @@ export default function CustomCalendar({ onChange, value }: Props) {
 		<div>
 			<CustomCalendarStyle />
 			<Calendar
-				onChange={onChange}
+				onChange={(value) => {
+					if (value instanceof Date) {
+						onChange(value);
+					}
+				}}
 				value={value}
 				locale="ko-KR"
 				calendarType="gregory"
