@@ -36,6 +36,7 @@ const Header = () => {
 						</S.SidebarMenu>
 						<S.SidebarMenu onClick={() => handleNavigate('/team5/foodList')}>맛집<span>▶</span></S.SidebarMenu>
 						<S.SidebarMenu onClick={() => handleNavigate('/team5/guessRate')}>골든벨 Quiz<span>▶</span></S.SidebarMenu>
+						<S.SidebarMenu onClick={() => handleNavigate('/team5/guessRateResult')}>골든벨 Quiz 정답자<span>▶</span></S.SidebarMenu>
 						<S.SidebarMenu onClick={() => handleNavigate('/team5/quiz')}>Quiz<span>▶</span></S.SidebarMenu>
 						<S.SidebarMenu onClick={() => handleNavigate('/team5/ranking')}>Ranking<span>▶</span></S.SidebarMenu>
 					</S.Sidebar>
