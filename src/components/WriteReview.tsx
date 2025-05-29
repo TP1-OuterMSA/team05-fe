@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import * as S from "../styles/Home/WriteReviewComponentStyle";
 import EachWriteReview from "./EachWriteReview";
-import { getQuestions, getTodayMeal, postReview, postTestToken, postToken } from "../api/review";
+import { getQuestions, getTodayMeal, postReview, postTestToken } from "../api/review";
 import { getGPTQuestion } from "../utils/gpt";
 import SubmitModal from "../components/modal/SubmitModal";
 import { useNavigate } from "react-router-dom";
@@ -53,43 +53,6 @@ const WriteReview = () => {
 			//서버로 정보 넘기는 코드
 		} else alert('모든 메뉴에 리뷰를 남겨주세요!');
 	}
-
-	//qr 확인 함수
-	const handleQrScan = (result: string) => {
-		if (isAuthorized) return;
-
-		if (!result.startsWith("team5-toReviewQR")) {
-			alert("올바른 QR 코드를 스캔해주세요.");
-			return;
-		}
-
-		let isValid: boolean;
-
-		const fetchToken = async () => {
-			try {
-				const response = await postToken(result);
-				isValid = response.result;
-
-				// ✅ 여기서 후속 로직 실행
-				if (isValid) {
-					setToken(result);
-					setIsAuthorized(true);
-				} else {
-					setIsAuthorized(false);
-					alert("이미 리뷰를 작성하셨습니다.");
-				}
-			} catch (error) {
-				alert("QR 코드 검증 중 오류가 발생했습니다.");
-			}
-		};
-
-		// ✅ 실제로 실행
-		fetchToken();
-	};
-
-
-
-
 
 	//mealtype이 바뀔 때마다 식단 list 초기화
 	const handleMealTypeChange = (type: MealType) => {
