@@ -34,6 +34,7 @@ const Header = () => {
 							<b style={{ color: 'red' }}>관리자 페이지</b>
 							<span>▶</span>
 						</S.SidebarMenu>
+						<S.SidebarMenu onClick={() => handleNavigate('/team5/reviewToday')}>리뷰페이지<span>▶</span></S.SidebarMenu>
 						<S.SidebarMenu onClick={() => handleNavigate('/team5/foodList')}>맛집<span>▶</span></S.SidebarMenu>
 						<S.SidebarMenu onClick={() => handleNavigate('/team5/guessRate')}>골든벨 Quiz<span>▶</span></S.SidebarMenu>
 						<S.SidebarMenu onClick={() => handleNavigate('/team5/guessRateResult')}>골든벨 Quiz 정답자<span>▶</span></S.SidebarMenu>
