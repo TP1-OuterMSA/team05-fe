@@ -24,8 +24,8 @@ const AdminLayout = () => {
 					먹고 싶은 메뉴 입력
 				</S.MenuButton>
 				<S.MenuButton
-					$active={pathname === "/team5/admin/place"}
-					onClick={() => navigate("/team5/admin/place")}
+					$active={pathname === "/team5/admin/foodListInput"}
+					onClick={() => navigate("/team5/admin/foodListInput")}
 				>
 					맛집 입력
 				</S.MenuButton>
