@@ -27,7 +27,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({
   canEdit,
 }) => {
   const handleCheck = (checkNum: number) => {
-	console.log(checkNum);
+    console.log(checkNum);
     if (canEdit) setAnswer(checkNum);
   };
 
