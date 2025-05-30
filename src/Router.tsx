@@ -4,6 +4,11 @@ import ReviewLayout from './components/layout/ReviewLayout';
 import ViewReviewPage from './pages/ViewReviewPage';
 import WantedMenu from './components/WantedMenu';
 import WriteReview from './components/WriteReview';
+
+import TotalReviewLayout from './components/layout/TotalReviewLayout';
+import ReviewToday from './components/ReviewToday';
+import ReviewPast from './components/ReviewPast';
+
 import QuizSuccess from './components/QuizSuccess';
 import QuizFail from './components/QuizFail';
 import QuizPage from './pages/QuizPage';
@@ -27,6 +32,10 @@ const Router = () => {
 					<Route path="/team5" element={<ReviewLayout />}>
 						<Route path="review" element={<WriteReview />} />
 						<Route path="wantMenu" element={<WantedMenu />} />
+					</Route>
+					<Route path="/team5" element={<TotalReviewLayout />}>
+						<Route path="reviewToday" element={<ReviewToday />} />
+						<Route path="reviewPast" element={<ReviewPast />} />
 					</Route>
 					<Route path="/team5/quiz" element={<QuizPage />} />
 					<Route path="/team5/quiz/quizSuccess" element={<QuizSuccess />} />
