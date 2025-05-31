@@ -1,52 +1,34 @@
 import { useEffect, useState } from "react";
 import * as S from "../styles/Home/ReviewPastComponentStyle";
 import Star from "../components/Star";
-
-interface Review {
-	id: number;
-	author: string;
-	date: string;
-	content: string;
-}
+import { getLastReview } from "../api/viewReview";
 
 const ReviewPast = () => {
 	const [selectedCategory, setSelectedCategory] = useState("조식");
 	const [sortOption, setSortOption] = useState("별점순");
-	const [averageScore, setAverageScore] = useState(4.1);
-	const [participants, setParticipants] = useState(10000);
-	const [reviews, setReviews] = useState<Review[]>([]);
+	const [averageScore, setAverageScore] = useState(0.0);
+	const [participants, setParticipants] = useState(0);
+	const [reviews, setReviews] = useState<string[]>([]);
 
 	useEffect(() => {
-		// API 대체 예정 더미 데이터
-		const dummyReviews: Review[] = [
-			{
-				id: 1,
-				author: "익명",
-				date: "2024-05-29",
-				content:
-					"전체적으로 맛있었습니다. 엄마의 손맛이 느껴졌어요. 전체적으로 맛있었습니다. 엄마의 손맛이 느껴졌어요.",
-			},
-			{
-				id: 2,
-				author: "익명",
-				date: "2024-05-29",
-				content: "비주얼도 좋고, 정성스러운 느낌이 들었습니다.",
-			},
-			{
-				id: 3,
-				author: "익명",
-				date: "2024-05-29",
-				content: "조금 짰지만 맛있었습니다. 다음엔 덜 짜면 좋겠어요.",
-			},
-			{
-				id: 4,
-				author: "익명",
-				date: "2024-05-29",
-				content: "밥의 양이 많아서 좋았어요. 반찬 조합도 훌륭했습니다.",
-			},
-		];
-		setReviews(dummyReviews);
-	}, []);
+		const handleFetchPastReview = async () => {
+			try {
+				const response = await getLastReview(selectedCategory == "조식" ? "BREAKFAST" : selectedCategory == "중식" ? "LUNCH" : selectedCategory == "석식" ? "DINNER" : "BREAKFAST");
+				const data = response.result;
+				setParticipants(data.reviewCount);
+				setAverageScore(data.overallAverageRating.toFixed(1) * 1);
+				setReviews(data.overallOpinions.slice().reverse());
+			} catch (error) { throw error; }
+		}
+
+		handleFetchPastReview();
+	}, [selectedCategory]);
+
+	const handleSort = (event: any) => {
+		setSortOption(event);
+		const reverseReview = reviews.slice().reverse();
+		setReviews(reverseReview);
+	}
 
 	return (
 		<S.Container>
@@ -63,9 +45,9 @@ const ReviewPast = () => {
 				</div>
 				<div>
 					<S.Label>정렬방식 선택</S.Label>
-					<S.Select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-						<option>별점순</option>
-						<option>낮은순</option>
+					<S.Select value={sortOption} onChange={(e) => handleSort(e.target.value)}>
+						<option>최신순</option>
+						<option>오래된순</option>
 					</S.Select>
 				</div>
 			</S.FilterBox>
@@ -84,10 +66,10 @@ const ReviewPast = () => {
 			<S.ReviewListTitle>{selectedCategory} 전체 리뷰</S.ReviewListTitle>
 
 			<S.ReviewList>
-				{reviews.map((review) => (
-					<S.ReviewItem key={review.id}>
-						<S.ReviewMeta>{review.author} | {review.date}</S.ReviewMeta>
-						<S.ReviewText>{review.content}</S.ReviewText>
+				{reviews.map((review, index) => (
+					<S.ReviewItem key={index}>
+						<S.ReviewMeta>익명</S.ReviewMeta>
+						<S.ReviewText>{review}</S.ReviewText>
 					</S.ReviewItem>
 				))}
 			</S.ReviewList>

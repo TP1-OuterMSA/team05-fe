@@ -11,6 +11,8 @@ export const Wrapper = styled.div`
 export const StarsWrapper = styled.div`
   display: flex;
   margin-bottom: 20px;
+  margin-top: auto;
+  margin-bottom: auto;
 `;
 
 export const StarButton = styled.button`

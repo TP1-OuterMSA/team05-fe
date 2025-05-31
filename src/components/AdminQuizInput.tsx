@@ -19,7 +19,9 @@ interface ChoiceDtoList {
 
 export const AdminQuizInput = () => {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
+	const [id, setId] = useState<number[]>([0, 0, 0]);
 	const [question, setQuestion] = useState<string[]>(["", "", ""]);
+	const [originQuestion, setOriginQuestion] = useState<string[]>(["", "", ""]);
 	const [optionsList, setOptionsList] = useState<[string, string, string, string][]>([
 		["", "", "", ""],
 		["", "", "", ""],
@@ -34,7 +36,6 @@ export const AdminQuizInput = () => {
 			let isAnyQuizChanged = false;
 
 			for (let i = 0; i < 3; i++) {
-				const currentId = i + 1;
 				const currentQuestion = question[i];
 				const currentOptions = optionsList[i];
 				const currentAnswer = answers[i];
@@ -58,7 +59,7 @@ export const AdminQuizInput = () => {
 					return index;
 				});
 
-				if (optionsList[i][answers[i]].trim() === "") {
+				if (optionsList[i][answers[i]] === "") {
 					alert("입력된 보기에 체크 표시를 해주세요!");
 					return;
 				}
@@ -77,14 +78,10 @@ export const AdminQuizInput = () => {
 				}
 
 				isAnyQuizChanged = true; // 하나라도 수정됨
-				if (
-					currentQuestion === "" &&
-					currentOptions.every(opt => opt === "") &&
-					currentAnswer === 0
-				) {
+				if (originQuestion[i] === "") {
 					await postQuiz(currentQuestion, currentOptions, currentAnswer);
 				} else {
-					await putQuiz(currentId, currentQuestion, currentOptions, currentAnswer);
+					await putQuiz(id[i], currentQuestion, currentOptions, currentAnswer);
 				}
 			}
 
@@ -106,7 +103,9 @@ export const AdminQuizInput = () => {
 			try {
 				const response = await getQuiz();
 				const quizList = response.result.quizzes.slice(0, 3); // 최대 3개만 사용
+				console.log(quizList);
 
+				const ids = quizList.map((quiz: any) => quiz.id);
 				const questions = quizList.map((quiz: any) => quiz.question);
 				const optionsList = quizList.map((quiz: any) =>
 					quiz.choiceDtoList.map((choice: any) => choice.content)
@@ -117,7 +116,9 @@ export const AdminQuizInput = () => {
 					return index;
 				});
 
+				setId(ids)
 				setQuestion(questions);
+				setOriginQuestion(questions);
 				setOptionsList(optionsList);
 				setAnswers(answers);
 				setOriginCards(quizList);

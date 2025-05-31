@@ -1,116 +1,111 @@
 import { useEffect, useState } from "react";
 import * as S from "../styles/Home/ReviewTodayComponentStyle";
 import Star from "../components/Star";
+import { getTodayReview } from "../api/viewReview";
 
 // 타입 정의
-interface ReviewSummaryData {
-	participants: number;
-	totalAvg: number;
-	menuRatings: Record<string, number>;
-}
-
-interface Review {
-	id: number;
-	author: string;
-	date: string;
-	content: string;
-	category: string;
-	menu: string;
-}
-
-interface AiQA {
-	question: string;
-	answer: string;
+interface MenuReviews {
+	menuName: string;
+	averageRating: number;
+	aiQuestion: string | null;
+	userResponses: string[];
 }
 
 const ReviewToday = () => {
 	const [selectedCategory, setSelectedCategory] = useState("전체");
-	const [selectedMenu, setSelectedMenu] = useState("전체");
+	const [menuOptions, setMenuOptions] = useState<string[]>([]);
+	const [selectedMenu, setSelectedMenu] = useState<string>("전체");
 	const [sortOption, setSortOption] = useState("최신순");
+	const [participants, setParticipants] = useState(0);
+	const [averageScore, setAverageScore] = useState(0.0);
 
-	const [summary, setSummary] = useState<ReviewSummaryData>({
-		participants: 90,
-		totalAvg: 4.1,
-		menuRatings: {
-			전체: 4.1,
-			돈까스: 4.2,
-			김치찌개: 3.9,
-			닭갈비: 4.0,
-			"오징어&소세지볶음": 3.8,
-		},
-	});
-
-	const [reviews, setReviews] = useState<Review[]>([]);
-	const [aiQAs, setAiQAs] = useState<AiQA[]>([]);
+	const [reviews, setReviews] = useState<string[]>([]);
+	const [menuReviews, setMenuReviews] = useState<MenuReviews[]>([]);
+	const [date, setDate] = useState<string>();
 
 	// 리뷰 더미 데이터
 	useEffect(() => {
-		const dummyReviews: Review[] = [
-			{
-				id: 1,
-				author: "익명",
-				date: "2024-05-30",
-				content: "전체적으로 맛있었습니다. 엄마의 손맛이 느껴졌어요.",
-				category: "조식",
-				menu: "돈까스",
-			},
-			{
-				id: 2,
-				author: "익명",
-				date: "2024-05-30",
-				content: "반찬 구성이 다양하고 맛있었습니다. 다음에도 먹고 싶어요.",
-				category: "조식",
-				menu: "김치찌개",
-			},
-			{
-				id: 3,
-				author: "익명",
-				date: "2024-05-30",
-				content: "밥 양도 많고 배불렀어요!",
-				category: "중식",
-				menu: "닭갈비",
-			},
-		];
-		setReviews(dummyReviews);
-	}, []);
+		if (selectedCategory == "전체") setMenuOptions(["전체"]);
 
-	// AI 질문+답변 불러오기 (selectedMenu가 바뀔 때마다)
+		const handleFetchTodayReview = async () => {
+			const today = new Date();
+			setDate(today.toISOString().slice(0, 10));
+			try {
+				if (selectedCategory == "전체") {
+					const categories = ["BREAKFAST", "LUNCH", "DINNER"];
+					const promises = categories.map((cat) => getTodayReview(today.toISOString().slice(0, 10), cat));
+
+					try {
+						const results = await Promise.all(promises);
+
+						// 2) 각 결과 파싱
+						const allData = results.map(res => res.result);
+
+						// 3) 참여 인원 합산
+						const totalParticipants = allData.reduce((acc, cur) => acc + cur.reviewCount, 0);
+
+						// 4) 평균 점수 계산 (각 평균 점수의 산술평균)
+						const validRatings = allData
+							.map((cur) => cur.overallAverageRating)
+							.filter((rating) => rating > 0);
+
+						const averageRating =
+							validRatings.length > 0
+								? validRatings.reduce((acc, cur) => acc + cur, 0) / validRatings.length
+								: 0;
+
+
+						// 5) 리뷰 모두 합치기 (최신순으로 보고 싶으면 적절히 정렬)
+						const allReviews = allData.flatMap(data => data.overallOpinions);
+						// 필요 시 reverse나 정렬 가능
+						// 최신순으로 표시하려면
+						const sortedReviews = allReviews.slice().reverse();
+
+						// 6) 상태 업데이트
+						setParticipants(totalParticipants);
+						setAverageScore(Number(averageRating.toFixed(1)));
+						setReviews(sortedReviews);
+
+					} catch (error) {
+						console.error(error);
+					}
+				} else {
+					const mealType = selectedCategory == "조식" ? "BREAKFAST" : selectedCategory == "중식" ? "LUNCH" : selectedCategory == "석식" ? "DINNER" : "BREAKFAST";
+					const response = await getTodayReview(today.toISOString().slice(0, 10), mealType);
+					const data = response.result;
+					setMenuOptions(["전체", ...data.menuReviews.map((menu: { menuName: string; }) => menu.menuName)]);
+					setParticipants(data.reviewCount);
+					setAverageScore(data.overallAverageRating.toFixed(1) * 1);
+					setMenuReviews(data.menuReviews);
+					const allResponses = data.menuReviews
+						.flatMap((menu: { userResponses: string; }) => menu.userResponses)
+
+					setReviews(allResponses);
+				}
+
+			} catch (error) { throw error; }
+		}
+		handleFetchTodayReview();
+		setSelectedMenu("전체");
+	}, [selectedCategory]);
+
 	useEffect(() => {
-		if (selectedMenu === "전체") {
-			setAiQAs([]);
+		setSortOption("최신순");
+	}, [selectedCategory, selectedMenu]);
+
+	useEffect(() => {
+		if (selectedMenu !== "전체") {
+			const reversedResponses = menuReviews
+				.find((menu) => menu.menuName === selectedMenu)?.userResponses
+				.slice() // 복사
+				.reverse(); // 최신순 정렬
+
+			setReviews(reversedResponses ?? []);
 			return;
 		}
-
-		// 추후 실제 API 요청 부분
-		// fetch(`/api/menus/${selectedMenu}/ai-questions`)
-		//   .then(res => res.json())
-		//   .then((data: AiQA[]) => setAiQAs(data))
-		//   .catch(err => console.error("AI 질문 불러오기 실패", err));
-
-		// 지금은 더미 데이터
-		const dummyQAs: AiQA[] = [
-			{
-				question: `${selectedMenu}의 부족한 점은 무엇이었나요?`,
-				answer: "조금 싱거웠어요.",
-			},
-			{
-				question: `${selectedMenu}의 장점은 무엇인가요?`,
-				answer: "고기가 많아서 좋았어요~~",
-			},
-		];
-
-		setAiQAs(dummyQAs);
-	}, [selectedMenu]);
-
-	const filteredReviews = reviews.filter((review) => {
-		if (selectedMenu === "전체") {
-			return selectedCategory === "전체" || review.category === selectedCategory;
-		}
-		return (
-			(selectedCategory === "전체" || review.category === selectedCategory) &&
-			review.menu === selectedMenu
-		);
-	});
+		const reverseReview = reviews.slice().reverse();
+		setReviews(reverseReview);
+	}, [sortOption])
 
 	return (
 		<S.Container>
@@ -127,59 +122,63 @@ const ReviewToday = () => {
 				<div>
 					<S.Label>메뉴 선택</S.Label>
 					<S.Select value={selectedMenu} onChange={(e) => setSelectedMenu(e.target.value)}>
-						<option>전체</option>
-						<option>돈까스</option>
-						<option>김치찌개</option>
-						<option>닭갈비</option>
-						<option>오징어&소세지볶음</option>
+						{menuOptions.map((menu, index) => (
+							<option key={index}>{menu}</option>
+						))}
 					</S.Select>
 				</div>
 				<div>
 					<S.Label>정렬 방식 선택</S.Label>
 					<S.Select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
 						<option>최신순</option>
-						<option>별점 높은 순</option>
-						<option>별점 낮은 순</option>
+						<option>늦은순</option>
 					</S.Select>
 				</div>
 			</S.FilterBox>
 
 			<S.ReviewSummary>
 				<S.ParticipantHeader>
-					리뷰 참여 인원 <span>{summary.participants}명</span>
+					리뷰 참여 인원 <span>{participants}명</span>
 				</S.ParticipantHeader>
 
-
-				{selectedMenu === "전체" ? (
-					Object.entries(summary.menuRatings).map(([menuName, rating]) =>
-						menuName === "전체" ? null : (
-							<S.StarRow key={menuName}>
-								<span>{menuName} 총 평점</span>
-								<Star rating={rating} onChangeRating={() => { }} />
-								<span>{rating.toFixed(1)}점</span>
-							</S.StarRow>
-						)
-					)
-				) : (
+				{selectedCategory === "전체" ? (
 					<>
 						<S.StarRow>
-							<span>{selectedMenu} 총 평점</span>
-							<Star rating={summary.menuRatings[selectedMenu] ?? 0} onChangeRating={() => { }} />
-							<span>{summary.menuRatings[selectedMenu]?.toFixed(1) ?? "-"}점</span>
+							<span>전체 총 평점</span>
+							<Star rating={averageScore} onChangeRating={() => { }} />
+							<span>{averageScore}점</span>
 						</S.StarRow>
+					</>) : selectedMenu === "전체" ? (
+						<>
+							{menuReviews.map((menu) => (
+								<S.StarRow key={menu.menuName}>
+									<span>{menu.menuName} 총 평점</span>
+									<Star rating={menu.averageRating} onChangeRating={() => { }} />
+									<span>{menu.averageRating.toFixed(1)}점</span>
+								</S.StarRow>
+							))}
+						</>
+					) : (
+					<>
+						{menuReviews.filter((menu) => menu.menuName === selectedMenu).map((menu) => (
+							<div key={menu.menuName}>
+								<S.StarRow>
+									<span>{menu.menuName} 총 평점</span>
+									<Star rating={menu.averageRating} onChangeRating={() => { }} />
+									<span>{menu.averageRating.toFixed(1)}점</span>
+								</S.StarRow>
 
-						{/* AI 질문 영역 */}
-						{aiQAs.length > 0 && (
-							<>
-								<S.AIQuestionTitle>{selectedMenu}에 대한 AI 질문</S.AIQuestionTitle>
-								{aiQAs.map((qa, index) => (
-									<S.AIQuestionBox key={index}>
-										<p><strong>Q. {qa.question}</strong></p>
-										<p>A. {qa.answer}</p>
-									</S.AIQuestionBox>
-								))}
-							</>
-						)}
+								{/* AI 질문 영역 */}
+								{menu.aiQuestion && (
+									<>
+										<S.AIQuestionTitle>{menu.menuName}에 대한 AI 질문</S.AIQuestionTitle>
+										<S.AIQuestionBox>
+											<p><strong>Q. {menu.aiQuestion}</strong></p>
+										</S.AIQuestionBox>
+									</>
+								)}
+							</div>
+						))}
 					</>
 				)}
 			</S.ReviewSummary>
@@ -189,12 +188,37 @@ const ReviewToday = () => {
 			</S.ReviewListTitle>
 
 			<S.ReviewList>
-				{filteredReviews.map((review) => (
-					<S.ReviewItem key={review.id}>
-						<S.ReviewMeta>{review.author} | {review.date}</S.ReviewMeta>
-						<S.ReviewText>{review.content}</S.ReviewText>
-					</S.ReviewItem>
-				))}
+				{selectedMenu == "전체" ?
+					<>
+						{reviews.map((review, index) => (
+							<S.ReviewItem key={index}>
+								<S.ReviewMeta>익명 | {date}</S.ReviewMeta>
+								<S.ReviewText>{review}</S.ReviewText>
+							</S.ReviewItem>
+						))}
+					</> :
+					<>{
+						sortOption == "최신순" ?
+							<>{
+								menuReviews.find((menu) => menu.menuName === selectedMenu)?.userResponses
+									.map((review, index) => (
+										<S.ReviewItem key={index}>
+											<S.ReviewMeta>익명 | {date}</S.ReviewMeta>
+											<S.ReviewText>{review}</S.ReviewText>
+										</S.ReviewItem>
+									))
+							}</> : <>{
+								menuReviews.find((menu) => menu.menuName === selectedMenu)?.userResponses.slice().reverse()
+									.map((review, index) => (
+										<S.ReviewItem key={index}>
+											<S.ReviewMeta>익명 | {date}</S.ReviewMeta>
+											<S.ReviewText>{review}</S.ReviewText>
+										</S.ReviewItem>
+									))
+							}</>
+					}
+
+					</>}
 			</S.ReviewList>
 		</S.Container>
 	);
