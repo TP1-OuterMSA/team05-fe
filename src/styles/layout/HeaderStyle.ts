@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const HeaderContainer = styled.header`
   width: 100%;
+  height: 100%;
   background-color: white;
   box-shadow: 0 1px 10px rgb(0, 0, 0, 0.1);
   z-index: 10;
@@ -22,9 +23,11 @@ export const Inner = styled.div`
 export const MenuImg = styled.img`
   width: 40px;
   height: 40px; 
+  margin-right: 20px;
   
   @media (max-width: 850px) {
-    display: none;
+    width: 20px;
+    height: 20px; 
   }
 `
 
@@ -80,7 +83,7 @@ export const Sidebar = styled.div`
   top: 80px;   
   left: 0;
   width: 350px; 
-  height: 100vh;
+  height: 100%;
   background-color: white;
   border-right: 2px solid #e0e0e0;
   padding: 40px 30px;
@@ -138,6 +141,6 @@ export const Backdrop = styled.div`
   left: 0;
   z-index: 900;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.2);      
 `;
