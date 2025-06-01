@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { FoodListCard } from "./FoodListCard";
 import * as S from "../styles/admin/AdminFoodListInputComponentStyle";
-import PlusIcon from "../assets/images/team5/PlusCircleBig.png";
+import PlusIcon from "../assets/images/team5/BigPlusCircle.png";
 import GhostIcon from "../assets/images/team5/ghost_btn_icon.png";
 import { getStore, postStore } from "../api/adminFoodList";
 import { useNavigate } from "react-router-dom";
