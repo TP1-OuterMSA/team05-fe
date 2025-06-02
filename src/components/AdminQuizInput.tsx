@@ -81,7 +81,11 @@ export const AdminQuizInput = () => {
 				if (originQuestion[i] === "") {
 					await postQuiz(currentQuestion, currentOptions, currentAnswer);
 				} else {
-					await putQuiz(id[i], currentQuestion, currentOptions, currentAnswer);
+					if (id[i] == undefined) {
+						await postQuiz(currentQuestion, currentOptions, currentAnswer);
+					} else {
+						await putQuiz(id[i], currentQuestion, currentOptions, currentAnswer);
+					}
 				}
 			}
 

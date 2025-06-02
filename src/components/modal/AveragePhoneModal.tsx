@@ -18,13 +18,13 @@ export default function AveragePhoneModal({ onClose }: Props) {
     if (isValid) {
       const formattedPhone = `${phone.slice(0, 3)}-${phone.slice(3, 7)}-${phone.slice(7)}`;
       localStorage.setItem("userPhone", formattedPhone);
-      
+
       const fetchPhone = async (phoneNum: string) => {
         try {
           const response = await postPhoneNum(phoneNum);
           const canSolveNow = response.result.canEarnToday;
           localStorage.setItem("userPoint", response.result.point);
-  
+
           if (canSolveNow) {
             onClose(); // 모달 닫기
           } else {
@@ -35,13 +35,13 @@ export default function AveragePhoneModal({ onClose }: Props) {
           console.error(error);
         }
       };
-  
+
       fetchPhone(formattedPhone);
     } else {
       setError("전화번호를 숫자 11자리로 정확히 입력해주세요.");
     }
   };
-  
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setIsSameAsStored(checked);
@@ -71,7 +71,7 @@ export default function AveragePhoneModal({ onClose }: Props) {
           }}
           readOnly={isSameAsStored}
         />
-        {localStorage.getItem("userPhone")!==null&&
+        {localStorage.getItem("userPhone") !== null &&
           <S.CheckBoxWrapper>
             <input
               type="checkbox"
@@ -84,7 +84,7 @@ export default function AveragePhoneModal({ onClose }: Props) {
         }
         {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
         <S.ButtonDiv>
-          <S.CancelButton onClick={()=>navigate('/team5')}>홈으로 가기</S.CancelButton>   
+          <S.CancelButton onClick={() => navigate('/team5')}>홈으로 가기</S.CancelButton>
           <S.ConfirmButton onClick={handleConfirm}>확인</S.ConfirmButton>
         </S.ButtonDiv>
       </S.ModalBox>

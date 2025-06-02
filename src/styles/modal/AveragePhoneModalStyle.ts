@@ -6,7 +6,7 @@ export const Backdrop = styled.div`
   left: 0;
   z-index: 999;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;

@@ -43,7 +43,7 @@ const WantedMenu = () => {
 	};
 	const handleConfirm = () => {
 		setShowModal(false);
-		navigate("/team5/evaluation");
+		navigate("/team5");
 	};
 
 	useEffect(() => {

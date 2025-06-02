@@ -7,7 +7,7 @@ export const Container = styled.div`
   align-items: center;
   padding: 40px 20px;
   background-color: white;
-  // height: 100vh;
+  height: 100vh;
 `;
 
 export const Title = styled.h2`

@@ -13,7 +13,6 @@ export default function GuessRateResultPage() {
 	const [data, setData] = useState<boolean>(false);
 	const [reviewData, setReviewData] = useState<boolean>(true);//이미 지난 날짜지만 아무도 리뷰를 남기지 않아서 데이터가 없을 경우
 	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [refinedDate, setRefinedDate] = useState<string>(selectedDate.toISOString().slice(0, 10));
 	const [averageScore, setAverageScore] = useState<number | null>(0);
 	const [winners, setWinners] = useState<ResultItem[]>([]);
 	const [searchTerm, setSearchTerm] = useState("");
@@ -27,35 +26,29 @@ export default function GuessRateResultPage() {
 		day: "numeric",
 	});
 
-	// const filteredWinners = winners.filter((w) =>
-	// 	w.phoneNumber.slice(-4).includes(searchTerm)
-	// );
-
 	useEffect(() => {
 		const formattedDate = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
-		console.log(formattedDate)
-		setRefinedDate(formattedDate);
+		console.log(formattedDate);
 
-		// 오늘 날짜를 비교용으로 준비 (시간은 00:00:00으로 초기화)
+		setAverageScore(0); // 초기화
+
+		// 오늘 날짜와 비교
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
-
 		const selected = new Date(selectedDate);
 		selected.setHours(0, 0, 0, 0);
 
-		// 오늘보다 미래면 setData(false)
 		if (selected >= today) {
 			setData(false);
-			setAverageScore(0);
-			return; // API 요청 안 함
+			return;
 		} else {
-			setData(true); // 오늘 이전이거나 오늘이면 true
+			setData(true);
 		}
 
 		const handleFetchResult = async () => {
 			try {
-				const response = await getRatingResult(refinedDate);
-				const avgData = await getAverageRate(refinedDate);
+				const response = await getRatingResult(formattedDate);
+				const avgData = await getAverageRate(formattedDate);
 				const refinedavgData = avgData.result.average;
 				setWinners(response.result);
 				setAverageScore(refinedavgData);
@@ -63,11 +56,12 @@ export default function GuessRateResultPage() {
 			} catch (error) {
 				setAverageScore(0);
 				setReviewData(false);
-				throw error;
 			}
-		}
+		};
+
 		handleFetchResult();
-	}, [selectedDate])
+	}, [selectedDate]);
+
 
 	return (
 		<S.Container>
